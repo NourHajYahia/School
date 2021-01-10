@@ -26,7 +26,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 	}
 
 	@Override
-	public boolean isCompanyExists(String email, String password) throws DAOException {
+	public boolean isCompanyExistByEmailAndPassword(String email, String password) throws DAOException {
 
 		boolean isExist = false;
 		Connection con = null;
@@ -274,5 +274,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
 		return company;
 	}
+
+	
 
 }

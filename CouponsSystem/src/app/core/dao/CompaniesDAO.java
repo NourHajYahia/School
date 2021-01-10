@@ -7,13 +7,13 @@ import app.core.exceptions.DAOException;
 
 public interface CompaniesDAO {
 
-	boolean isCompanyExists(String email, String password) throws DAOException;
+	boolean isCompanyExistByEmailAndPassword(String email, String password) throws DAOException;
 
-	public boolean isCompanyExistByEmail(String companyEmail) throws DAOException;
+	boolean isCompanyExistByEmail(String companyEmail) throws DAOException;
 
-	public boolean isCompanyExistByName(String companyName) throws DAOException;
+	boolean isCompanyExistByName(String companyName) throws DAOException;
 
-	public Company getCompanyByEmailAndPassword(String email, String password) throws DAOException;
+	Company getCompanyByEmailAndPassword(String email, String password) throws DAOException;
 
 	void addCompany(Company company) throws DAOException;
 

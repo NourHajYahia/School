@@ -155,6 +155,128 @@ public class CouponsDBDAO implements CouponsDAO {
 		return coupons;
 
 	}
+	
+	@Override
+	public ArrayList<Coupon> getAllCouponsByCompanyId(int companyID) throws DAOException {
+		
+		Connection con = null;
+		ArrayList<Coupon> coupons = new ArrayList<Coupon>();
+		try {
+			con = connectionPool.getConnection();
+			String sql = "select * from coupons where company_id = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, companyID);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				while (rs.next()) {
+					Coupon coupon = new Coupon();
+					coupon.setId(rs.getInt("id"));
+					coupon.setCompanyID(rs.getInt("company_id"));
+					coupon.setCategory(Category.values()[rs.getInt("category_id")]);
+					coupon.setTitle(rs.getString("title"));
+					coupon.setDescription(rs.getString("description"));
+					coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
+					coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+					coupon.setAmount(rs.getInt("amount"));
+					coupon.setPrice(rs.getInt("price"));
+					coupon.setImage(rs.getString("image"));
+					coupons.add(coupon);
+				}
+			} else {
+				return null;
+			}
+
+		} catch (ConnectionPoolException | SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("DAO Error: getting company coupons failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
+		}
+
+		return coupons;
+	}
+	
+@Override
+public ArrayList<Coupon> getAllCouponsByCompanyIdAndCategory(int companyID, int categoryID) throws DAOException {
+		
+		Connection con = null;
+		ArrayList<Coupon> coupons = new ArrayList<Coupon>();
+		try {
+			con = connectionPool.getConnection();
+			String sql = "select * from coupons where company_id = ? and category_id =?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, companyID);
+			pstmt.setInt(2, categoryID);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				while (rs.next()) {
+					Coupon coupon = new Coupon();
+					coupon.setId(rs.getInt("id"));
+					coupon.setCompanyID(rs.getInt("company_id"));
+					coupon.setCategory(Category.values()[rs.getInt("category_id")]);
+					coupon.setTitle(rs.getString("title"));
+					coupon.setDescription(rs.getString("description"));
+					coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
+					coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+					coupon.setAmount(rs.getInt("amount"));
+					coupon.setPrice(rs.getInt("price"));
+					coupon.setImage(rs.getString("image"));
+					coupons.add(coupon);
+				}
+			} else {
+				return null;
+			}
+
+		} catch (ConnectionPoolException | SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("DAO Error: getting company coupons by category failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
+		}
+
+		return coupons;
+	}
+
+@Override
+public ArrayList<Coupon> getAllCouponsByCompanyIdAndPrice(int companyID, int maxPrice) throws DAOException {
+	
+	Connection con = null;
+	ArrayList<Coupon> coupons = new ArrayList<Coupon>();
+	try {
+		con = connectionPool.getConnection();
+		String sql = "select * from coupons where company_id = ? and price =?";
+		PreparedStatement pstmt = con.prepareStatement(sql);
+		pstmt.setInt(1, companyID);
+		pstmt.setInt(2, maxPrice);
+		ResultSet rs = pstmt.executeQuery();
+		if (rs.next()) {
+			while (rs.next()) {
+				Coupon coupon = new Coupon();
+				coupon.setId(rs.getInt("id"));
+				coupon.setCompanyID(rs.getInt("company_id"));
+				coupon.setCategory(Category.values()[rs.getInt("category_id")]);
+				coupon.setTitle(rs.getString("title"));
+				coupon.setDescription(rs.getString("description"));
+				coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
+				coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+				coupon.setAmount(rs.getInt("amount"));
+				coupon.setPrice(rs.getInt("price"));
+				coupon.setImage(rs.getString("image"));
+				coupons.add(coupon);
+			}
+		} else {
+			return null;
+		}
+
+	} catch (ConnectionPoolException | SQLException e) {
+		e.printStackTrace();
+		throw new DAOException("DAO Error: getting company coupons by max price failed", e);
+	} finally {
+		connectionPool.restoreConnection(con);
+	}
+
+	return coupons;
+}
 
 	@Override
 	public Coupon getCouponById(int couponID) throws DAOException {
@@ -256,5 +378,60 @@ public class CouponsDBDAO implements CouponsDAO {
 		}
 
 	}
+	
+	
+
+	@Override
+	public boolean isCouponExistByTitleAndCompanyId(String couponTitle, int companyID) throws DAOException {
+		boolean isExist = false;
+		Connection con = null;
+
+		try {
+			con = connectionPool.getConnection();
+			String sql = "select * from coupons where title = ? and company_id = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, couponTitle);
+			pstmt.setInt(1, companyID);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				isExist = true;
+			}
+		} catch (ConnectionPoolException | SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("DAO Error: checking existence failed", e);
+		} finally {
+
+			connectionPool.restoreConnection(con);
+		}
+		
+		return isExist;
+	}
+
+	@Override
+	public boolean isCatogeryExist(int categoryID) throws DAOException {
+		boolean isExist = false;
+		Connection con = null;
+
+		try {
+			con = connectionPool.getConnection();
+			String sql = "select * from categories where id = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, categoryID);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				isExist = true;
+			}
+		} catch (ConnectionPoolException | SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("DAO Error: checking existence failed", e);
+		} finally {
+
+			connectionPool.restoreConnection(con);
+		}
+		
+		return isExist;
+	}
+
+	
 
 }
