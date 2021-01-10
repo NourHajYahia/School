@@ -125,5 +125,32 @@ public class Coupon {
 				+ ", description=" + description + ", startDate=" + startDate + ", endDate=" + endDate + ", amount="
 				+ amount + ", price=" + price + ", image=" + image + "]";
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + companyID;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Coupon other = (Coupon) obj;
+		if (companyID != other.companyID)
+			return false;
+		if (id != other.id)
+			return false;
+		return true;
+	}
+
+	
 
 }

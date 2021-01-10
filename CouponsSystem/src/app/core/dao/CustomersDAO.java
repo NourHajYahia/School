@@ -21,4 +21,6 @@ public interface CustomersDAO {
 
 	Customer getCustomerById(int customerID) throws DAOException;
 
+	Customer getCustomerByEmail(String email) throws DAOException;
+
 }

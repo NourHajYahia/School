@@ -206,5 +206,37 @@ public class CustomersDBDAO implements CustomersDAO {
 		return customer;
 
 	}
+	
+	@Override
+	public Customer getCustomerByEmail(String email) throws DAOException {
+
+		Connection con = null;
+		Customer customer;
+
+		try {
+			con = connectionPool.getConnection();
+			String sql = "select * from customers where id=?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, email);
+			ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
+				customer = new Customer();
+				customer.setFirstName(rs.getString("firstname"));
+				customer.setLastName(rs.getString("lastname"));
+				customer.setEmail(rs.getString("email"));
+				customer.setPassword(rs.getString("password"));
+			} else {
+				return null;
+			}
+		} catch (ConnectionPoolException | SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("DAO Error: getting company failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
+		}
+
+		return customer;
+
+	}
 
 }

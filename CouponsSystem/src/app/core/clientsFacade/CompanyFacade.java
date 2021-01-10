@@ -19,7 +19,6 @@ public class CompanyFacade extends ClientFacade {
 			this.companiesDAO = new CompaniesDBDAO();
 			this.couponsDAO = new CouponsDBDAO();
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new FacadeException("CompanyFacade Error: initializing CompanyFacade failed", e);
 		}
@@ -44,8 +43,8 @@ public class CompanyFacade extends ClientFacade {
 	public void addCoupon(Coupon coupon) throws FacadeException {
 
 		try {
-			if (!couponsDAO.isCouponExistByTitleAndCompanyId(coupon.getTitle(), coupon.getCompanyID())) {
-				if (couponsDAO.isCouponExistByTitleAndCompanyId(coupon.getTitle(), companyID)) {
+			if (!couponsDAO.isCouponExistByTitleAndCompanyId(coupon.getTitle(), companyID) && coupon.getCompanyID() == companyID) {
+				if (couponsDAO.isCatogeryExist(coupon.getCategory().ordinal())) {
 					couponsDAO.addCategory(coupon.getCategory());
 				}
 				couponsDAO.addCoupon(coupon);
@@ -64,11 +63,15 @@ public class CompanyFacade extends ClientFacade {
 
 		Coupon currCoupon;
 		try {
-			currCoupon = couponsDAO.getCouponById(coupon.getId());
-			if (currCoupon != null && currCoupon.getCompanyID() == companyID) {
-				couponsDAO.updateCoupon(coupon);
-			} else {
-				throw new FacadeException("CompanyFacade Error: updating company failed: coupon does not exist");
+			if (coupon.getCompanyID() == companyID) {
+				currCoupon = couponsDAO.getCouponById(coupon.getId());
+				if (currCoupon != null) {
+					couponsDAO.updateCoupon(coupon);
+				} else {
+					throw new FacadeException("CompanyFacade Error: updating company failed: coupon does not exist");
+				}
+			}else {
+				throw new FacadeException("CompanyFacade Error: updating company failed: not allowed to update company's id");
 			}
 		} catch (DAOException e) {
 			e.printStackTrace();
@@ -82,7 +85,7 @@ public class CompanyFacade extends ClientFacade {
 		Coupon currCoupon;
 		try {
 			currCoupon = couponsDAO.getCouponById(couponID);
-			if (currCoupon != null) {
+			if (currCoupon != null && currCoupon.getCompanyID() == companyID) {
 				couponsDAO.deleteCoupon(couponID);
 			} else {
 				throw new FacadeException("CompanyFacade Error: deleting coupon failed: coupon does not exist");
@@ -94,7 +97,7 @@ public class CompanyFacade extends ClientFacade {
 
 	}
 
-	public ArrayList<Coupon> getCompanyCoupons(Coupon coupo) throws FacadeException {
+	public ArrayList<Coupon> getCompanyCoupons() throws FacadeException {
 		try {
 			return couponsDAO.getAllCouponsByCompanyId(companyID);
 		} catch (DAOException e) {
@@ -113,7 +116,7 @@ public class CompanyFacade extends ClientFacade {
 		}
 	}
 
-	public ArrayList<Coupon> getCompanyCoupons(int maxPrice) throws FacadeException {
+	public ArrayList<Coupon> getCompanyCoupons(double maxPrice) throws FacadeException {
 		try {
 			return couponsDAO.getAllCouponsByCompanyIdAndPrice(companyID, maxPrice);
 		} catch (DAOException e) {
