@@ -7,7 +7,6 @@ import app.core.beans.Coupon;
 import app.core.exceptions.DAOException;
 
 public interface CouponsDAO {
-	
 
 	void addCoupon(Coupon coupon) throws DAOException;
 
@@ -17,12 +16,12 @@ public interface CouponsDAO {
 
 	ArrayList<Coupon> getAllCoupons() throws DAOException;
 
-	Coupon getOneCoupon(int couponID) throws DAOException;
+	Coupon getCouponById(int couponID) throws DAOException;
 
 	void addCouponPurchase(int customerID, int couponID) throws DAOException;
 
 	void deleteCouponPurchase(int customerID, int couponID) throws DAOException;
 
 	void addCategory(Category category) throws DAOException;
-	
+
 }

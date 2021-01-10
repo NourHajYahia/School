@@ -14,8 +14,6 @@ public class Coupon {
 	private int amount;
 	private double price;
 	private String image;
-	
-	
 
 	public Coupon() {
 		super();

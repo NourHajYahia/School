@@ -11,8 +11,6 @@ public class Customer {
 	private String email;
 	private String password;
 	private List<Coupon> coupons = new ArrayList<>();
-	
-	
 
 	/**
 	 * @param id

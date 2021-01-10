@@ -12,8 +12,8 @@ public class CompanyFacade extends ClientFacade {
 	
 	public CompanyFacade() throws FacadeException {
 		try {
-			super.companiesDAO = new CompaniesDBDAO();
-			super.couponsDAO = new CouponsDBDAO();
+			this.companiesDAO = new CompaniesDBDAO();
+			this.couponsDAO = new CouponsDBDAO();
 		} catch (DAOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -26,7 +26,7 @@ public class CompanyFacade extends ClientFacade {
 		
 			try {
 				if (companiesDAO.isCompanyExists(email, password)) {				
-					companyID = companiesDAO.getLoginInCompanyID(email, password).getId();
+					companyID = companiesDAO.getCompanyByEmailAndPassword(email, password).getId();
 					return true;
 				}else {
 					return false;

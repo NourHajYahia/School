@@ -31,7 +31,7 @@ public class CouponsDBDAO implements CouponsDAO {
 	@Override
 	public void addCoupon(Coupon coupon) throws DAOException {
 
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
@@ -55,16 +55,16 @@ public class CouponsDBDAO implements CouponsDAO {
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: adding coupon failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
-
-		connectionPool.restoreConnection(con);
 
 	}
 
 	@Override
 	public void updateCoupon(Coupon coupon) throws DAOException {
 
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
@@ -85,49 +85,41 @@ public class CouponsDBDAO implements CouponsDAO {
 			pstmt.setDouble(8, coupon.getPrice());
 			pstmt.setString(9, coupon.getImage());
 			pstmt.setInt(10, coupon.getId());
-
-			int rowCount = pstmt.executeUpdate();
-			if (rowCount == 0) {
-				throw new DAOException("DAO Error: failed to find the requiered coupon, updating failed");
-			}
-
+			pstmt.executeUpdate();
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: updating coupon failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
-
-		connectionPool.restoreConnection(con);
 
 	}
 
 	@Override
 	public void deleteCoupon(int couponID) throws DAOException {
 
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
 			String sql = "delete from coupons where id=?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, couponID);
-			int rowCount = pstmt.executeUpdate();
-			if (rowCount == 0) {
-				throw new DAOException("DAO Error: failed to find the requiered coupon, deleting failed");
-			}
-
+			pstmt.executeUpdate();
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: deleting coupon failed", e);
-		}
+		} finally {
+			connectionPool.restoreConnection(con);
 
-		connectionPool.restoreConnection(con);
+		}
 
 	}
 
 	@Override
 	public ArrayList<Coupon> getAllCoupons() throws DAOException {
 
-		Connection con;
+		Connection con = null;
 		ArrayList<Coupon> coupons = new ArrayList<Coupon>();
 		try {
 			con = connectionPool.getConnection();
@@ -149,24 +141,25 @@ public class CouponsDBDAO implements CouponsDAO {
 					coupon.setImage(rs.getString("image"));
 					coupons.add(coupon);
 				}
-			}else {
+			} else {
 				return null;
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting all coupons failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
 
-		connectionPool.restoreConnection(con);
 		return coupons;
 
 	}
 
 	@Override
-	public Coupon getOneCoupon(int couponID) throws DAOException {
+	public Coupon getCouponById(int couponID) throws DAOException {
 
-		Connection con;
+		Connection con = null;
 		Coupon coupon;
 
 		try {
@@ -188,15 +181,15 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setImage(rs.getString("image"));
 			} else {
 				return null;
-//				throw new DAOException("DAO Error: failed to find the requiered coupons, getting company failed");
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting coupons failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
 
-		connectionPool.restoreConnection(con);
 		return coupon;
 
 	}
@@ -204,7 +197,7 @@ public class CouponsDBDAO implements CouponsDAO {
 	@Override
 	public void addCouponPurchase(int customerID, int couponID) throws DAOException {
 
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
@@ -216,16 +209,16 @@ public class CouponsDBDAO implements CouponsDAO {
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: adding coupon purchase failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
-
-		connectionPool.restoreConnection(con);
 
 	}
 
 	@Override
 	public void deleteCouponPurchase(int customerID, int couponID) throws DAOException {
 
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
@@ -233,24 +226,20 @@ public class CouponsDBDAO implements CouponsDAO {
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, customerID);
 			pstmt.setInt(2, couponID);
-			int rowCount = pstmt.executeUpdate();
-			if (rowCount == 0) {
-				throw new DAOException("DAO Error: failed to find the requiered coupon purchase, deleting failed");
-			}
-
+			pstmt.executeUpdate();
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: deleting coupon purchase failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
-
-		connectionPool.restoreConnection(con);
 
 	}
 
 	@Override
 	public void addCategory(Category category) throws DAOException {
 
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
@@ -262,9 +251,9 @@ public class CouponsDBDAO implements CouponsDAO {
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: adding category failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
-
-		connectionPool.restoreConnection(con);
 
 	}
 

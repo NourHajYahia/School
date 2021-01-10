@@ -20,7 +20,7 @@ public class CompaniesDBDAOTest {
 		try {
 			CompaniesDBDAO compDao = new CompaniesDBDAO();
 			companies = compDao.getAllCompanies();
-			getCompany = compDao.getOneCompany(3);
+			getCompany = compDao.getCompanyById(3);
 			doesExists = compDao.isCompanyExists("fff@fff.com", "fff");
 			//compDao.updateCompany(updateCompany);
 			//compDao.deleteCompany(2);

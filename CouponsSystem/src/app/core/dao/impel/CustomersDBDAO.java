@@ -28,7 +28,7 @@ public class CustomersDBDAO implements CustomersDAO {
 	@Override
 	public boolean isCustomerExists(String email, String password) throws DAOException {
 		boolean isExist = false;
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
@@ -43,16 +43,17 @@ public class CustomersDBDAO implements CustomersDAO {
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: checking existence failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
 
-		connectionPool.restoreConnection(con);
 		return isExist;
 	}
 
 	@Override
-	public boolean isCustomerEmailExists(String email) throws DAOException {
+	public boolean isCustomerExistsByEmail(String email) throws DAOException {
 		boolean isExist = false;
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
@@ -66,16 +67,17 @@ public class CustomersDBDAO implements CustomersDAO {
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: checking existence failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);			
 		}
 
-		connectionPool.restoreConnection(con);
 		return isExist;
 	}
 
 	@Override
 	public void addCustomer(Customer customer) throws DAOException {
 
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
@@ -90,15 +92,15 @@ public class CustomersDBDAO implements CustomersDAO {
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: adding company failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
-
-		connectionPool.restoreConnection(con);
 
 	}
 
 	@Override
 	public void updateCustomer(Customer customer) throws DAOException {
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
@@ -110,49 +112,40 @@ public class CustomersDBDAO implements CustomersDAO {
 			pstmt.setString(3, customer.getEmail());
 			pstmt.setString(4, customer.getPassword());
 			pstmt.setInt(5, customer.getId());
-
-			int rowCount = pstmt.executeUpdate();
-			if (rowCount == 0) {
-				throw new DAOException("DAO Error: failed to find the requiered company, updating failed");
-			}
-
+			pstmt.executeUpdate();
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: updating company failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
-
-		connectionPool.restoreConnection(con);
 
 	}
 
 	@Override
 	public void deleteCustomer(int customerID) throws DAOException {
 
-		Connection con;
+		Connection con = null;
 
 		try {
 			con = connectionPool.getConnection();
 			String sql = "delete from customers where id=?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, customerID);
-			int rowCount = pstmt.executeUpdate();
-			if (rowCount == 0) {
-				throw new DAOException("DAO Error: failed to find the requiered company, deleting failed");
-			}
-
+			pstmt.executeUpdate();
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: deleting company failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
-
-		connectionPool.restoreConnection(con);
 
 	}
 
 	@Override
 	public ArrayList<Customer> getAllCustomers() throws DAOException {
 
-		Connection con;
+		Connection con = null;
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 		try {
 			con = connectionPool.getConnection();
@@ -174,17 +167,18 @@ public class CustomersDBDAO implements CustomersDAO {
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting all companies failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
 
-		connectionPool.restoreConnection(con);
 		return customers;
 
 	}
 
 	@Override
-	public Customer getOneCustomer(int customerID) throws DAOException {
+	public Customer getCustomerById(int customerID) throws DAOException {
 
-		Connection con;
+		Connection con = null;
 		Customer customer;
 
 		try {
@@ -201,15 +195,14 @@ public class CustomersDBDAO implements CustomersDAO {
 				customer.setPassword(rs.getString("password"));
 			} else {
 				return null;
-//				throw new DAOException("DAO Error: failed to find the requiered company, getting company failed");
 			}
-
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting company failed", e);
+		} finally {
+			connectionPool.restoreConnection(con);
 		}
 
-		connectionPool.restoreConnection(con);
 		return customer;
 
 	}

@@ -14,9 +14,9 @@ public class AdminFacade extends ClientFacade {
 
 	public AdminFacade() throws FacadeException {
 		try {
-			super.companiesDAO = new CompaniesDBDAO();
-			super.customersDAO = new CustomersDBDAO();
-			super.couponsDAO = new CouponsDBDAO();
+			this.companiesDAO = new CompaniesDBDAO();
+			this.customersDAO = new CustomersDBDAO();
+			this.couponsDAO = new CouponsDBDAO();
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new FacadeException("AdminFacade Error: initializing AdminFacade failed", e);
@@ -35,20 +35,11 @@ public class AdminFacade extends ClientFacade {
 	public void addCompany(Company company) throws FacadeException {
 
 		try {
-			// Check the db if contains a company with the same name, if true throw facade
-			// exception
-			if (companiesDAO.isCompanyNameExist(company.getName())) {
-				throw new FacadeException(
-						"AdminFacade Error: adding company failed, company name already exists");
-			}
-			// Check the db if contains a company with the same email, if true throw facade
-			// exception
-			else if (companiesDAO.isCompanyEmailExist(company.getEmail())) {
-				throw new FacadeException(
-						"AdminFacade Error: adding company failed, company email already exists");
-			}
-			// if passes then add company to db
-			else {
+			if (companiesDAO.isCompanyExistByName(company.getName())) {
+				throw new FacadeException("AdminFacade Error: adding company failed, company name already exists");
+			} else if (companiesDAO.isCompanyExistByEmail(company.getEmail())) {
+				throw new FacadeException("AdminFacade Error: adding company failed, company email already exists");
+			} else {
 				companiesDAO.addCompany(company);
 			}
 		} catch (DAOException e) {
@@ -61,14 +52,15 @@ public class AdminFacade extends ClientFacade {
 	public void updateCompany(Company company) throws FacadeException {
 
 		try {
-			Company currCompany = companiesDAO.getOneCompany(company.getId());
-			if(currCompany != null) {
+			Company currCompany = companiesDAO.getCompanyById(company.getId());
+			if (currCompany != null) {
 				if (currCompany.getName() == company.getName()) {
-					companiesDAO.updateCompany(company);			
-				}else {
-					throw new FacadeException("AdminFacade Error: updating company failed, can not update company's name");
+					companiesDAO.updateCompany(company);
+				} else {
+					throw new FacadeException(
+							"AdminFacade Error: updating company failed, can not update company's name");
 				}
-			}else {
+			} else {
 				throw new FacadeException("AdminFacade Error: updating company failed, did not find required company");
 			}
 		} catch (DAOException e) {
@@ -81,7 +73,12 @@ public class AdminFacade extends ClientFacade {
 	public void deleteCompany(Company company) throws FacadeException {
 
 		try {
-			companiesDAO.deleteCompany(company.getId());
+			Company currCompany = companiesDAO.getCompanyById(company.getId());
+			if (currCompany.equals(company)) {
+				companiesDAO.deleteCompany(company.getId());
+			} else {
+				throw new FacadeException("AdminFacade Error: deleting company failed, did not find required company");
+			}
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new FacadeException("AdminFacade Error: deleting company failed", e);
@@ -98,9 +95,9 @@ public class AdminFacade extends ClientFacade {
 		}
 	}
 
-	public Company getOneCompany(Company company) throws FacadeException {
+	public Company getCompany(Company company) throws FacadeException {
 		try {
-			return companiesDAO.getOneCompany(company.getId());
+			return companiesDAO.getCompanyById(company.getId());
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new FacadeException("AdminFacade Error: getting company failed", e);
@@ -110,11 +107,10 @@ public class AdminFacade extends ClientFacade {
 	public void addCustomer(Customer customer) throws FacadeException {
 
 		try {
-			if (!customersDAO.isCustomerEmailExists(customer.getEmail())) {
+			if (!customersDAO.isCustomerExistsByEmail(customer.getEmail())) {
 				customersDAO.addCustomer(customer);
 			} else {
-				throw new FacadeException(
-						"AdminFacade Error: adding customer failed, customer email already exists");
+				throw new FacadeException("AdminFacade Error: adding customer failed, customer email already exists");
 			}
 		} catch (DAOException e) {
 			e.printStackTrace();
@@ -126,7 +122,12 @@ public class AdminFacade extends ClientFacade {
 	public void updateCustomer(Customer customer) throws FacadeException {
 
 		try {
-			customersDAO.updateCustomer(customer);
+			Customer currCustomer = customersDAO.getCustomerById(customer.getId());
+			if (currCustomer != null) {
+				customersDAO.updateCustomer(customer);
+			}else {
+				throw new FacadeException("AdminFacade Error: updating customer failed, did not find required company");
+			}
 
 		} catch (DAOException e) {
 			e.printStackTrace();
@@ -137,7 +138,12 @@ public class AdminFacade extends ClientFacade {
 
 	public void deleteCustomer(int customerID) throws FacadeException {
 		try {
-			customersDAO.deleteCustomer(customerID);
+			Customer currCustomer = customersDAO.getCustomerById(customerID);
+			if (currCustomer != null) {
+				customersDAO.deleteCustomer(customerID);
+			}else {
+				throw new FacadeException("AdminFacade Error: deleting customer failed, did not find required company");
+			}
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new FacadeException("AdminFacade Error: delete customer failed", e);
@@ -155,9 +161,9 @@ public class AdminFacade extends ClientFacade {
 
 	}
 
-	public Customer getOneCustomer(int customerID) throws FacadeException {
+	public Customer getCustomerById(int customerID) throws FacadeException {
 		try {
-			return customersDAO.getOneCustomer(customerID);
+			return customersDAO.getCustomerById(customerID);
 		} catch (DAOException e) {
 			e.printStackTrace();
 			throw new FacadeException("AdminFacade Error: geting customer failed", e);

@@ -5,13 +5,12 @@ import java.util.List;
 
 public class Company {
 
-
 	private int id;
 	private String name;
 	private String email;
 	private String password;
 	private List<Coupon> coupons = new ArrayList<>();
-	
+
 	public Company() {
 		super();
 	}
@@ -32,23 +31,23 @@ public class Company {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public void setCoupons(List<Coupon> coupons) {
 		this.coupons = coupons;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
