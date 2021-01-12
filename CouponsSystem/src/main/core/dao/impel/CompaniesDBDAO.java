@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import main.core.beans.Company;
@@ -49,7 +50,12 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: checking existence failed: failed to aquire company from SQL", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: checking existence failed: failed to aquire company from SQL", e);
+			}
 		}
 
 		return isExist;
@@ -75,7 +81,12 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new DAOException("DAO Error: checking existence failed", e);
 		} finally {
 
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: checking existence failed", e);
+			}
 		}
 
 		return isExist;
@@ -99,7 +110,12 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: checking existence failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: checking existence failed", e);
+			}
 
 		}
 
@@ -113,19 +129,25 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
 		try {
 			con = connectionPool.getConnection();
-			String sql = "insert into companies values(?,?,?,?)";
-			PreparedStatement pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, "default");
-			pstmt.setString(2, company.getName());
-			pstmt.setString(3, company.getEmail());
-			pstmt.setString(4, company.getPassword());
+			String sql = "insert into companies (name, email, password) values(?,?,?)";
+			PreparedStatement pstmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			pstmt.setString(1, company.getName());
+			pstmt.setString(2, company.getEmail());
+			pstmt.setString(3, company.getPassword());
 			pstmt.executeUpdate();
+			ResultSet resKeys = pstmt.getGeneratedKeys();
+			resKeys.next();
+			company.setId(resKeys.getInt(1));
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: adding company failed", e);
 		} finally {
-
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: adding company failed", e);
+			}
 		}
 
 	}
@@ -147,7 +169,12 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: updating company failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: updating company failed", e);
+			}
 		}
 
 	}
@@ -169,7 +196,12 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new DAOException("DAO Error: deleting company failed", e);
 		} finally {
 
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: deleting company failed", e);
+			}
 		}
 
 	}
@@ -185,14 +217,15 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				while (rs.next()) {
-					Company company = new Company();
+				Company company;
+				do {
+					company = new Company();
 					company.setId(rs.getInt("id"));
 					company.setName(rs.getString("name"));
 					company.setEmail(rs.getString("email"));
 					company.setPassword(rs.getString("password"));
 					companies.add(company);
-				}
+				} while(rs.next());
 			} else {
 				return null;
 			}
@@ -202,7 +235,12 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new DAOException("DAO Error: getting all companies failed", e);
 		} finally {
 
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting all companies failed", e);
+			}
 		}
 
 		return companies;
@@ -233,7 +271,12 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting company failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting company failed", e);
+			}
 
 		}
 
@@ -248,6 +291,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 		Company company;
 
 		try {
+			
 			con = connectionPool.getConnection();
 			String sql = "select id from companies where email = ? AND password = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
@@ -268,8 +312,12 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting company failed", e);
 		} finally {
-
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting company failed", e);
+			}
 		}
 
 		return company;

@@ -51,12 +51,20 @@ public class CouponsDBDAO implements CouponsDAO {
 			pstmt.setInt(8, coupon.getAmount());
 			pstmt.setDouble(9, coupon.getPrice());
 			pstmt.setString(10, coupon.getImage());
-			pstmt.executeUpdate();
+			pstmt.executeUpdate(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+			ResultSet resKeys = pstmt.getGeneratedKeys();
+			resKeys.next();
+			coupon.setId(resKeys.getInt(1));
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: adding coupon failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: adding coupon failed", e);
+			}
 		}
 
 	}
@@ -90,7 +98,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: updating coupon failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: updating coupon failed", e);
+			}
 		}
 
 	}
@@ -110,7 +123,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: deleting coupon failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: deleting coupon failed", e);
+			}
 
 		}
 
@@ -149,7 +167,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting all coupons failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting all coupons failed", e);
+			}
 		}
 
 		return coupons;
@@ -190,7 +213,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting company coupons failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting company coupons failed", e);
+			}
 		}
 
 		return coupons;
@@ -231,7 +259,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting company coupons by category failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting company coupons by category failed", e);
+			}
 		}
 
 		return coupons;
@@ -272,7 +305,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting company coupons by max price failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting company coupons by max price failed", e);
+			}
 		}
 
 		return coupons;
@@ -309,7 +347,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting coupons failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting coupons failed", e);
+			}
 		}
 
 		return coupon;
@@ -332,7 +375,37 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: adding coupon purchase failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: adding coupon purchase failed", e);
+			}
+		}
+
+	}
+	
+	@Override
+	public void deleteCouponPurchase(int couponID) throws DAOException {
+
+		Connection con = null;
+
+		try {
+			con = connectionPool.getConnection();
+			String sql = "delete from customers_vs_coupons where coupon_id=?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, couponID);
+			pstmt.executeUpdate();
+		} catch (ConnectionPoolException | SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("DAO Error: deleting coupon purchase failed", e);
+		} finally {
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: deleting coupon purchase failed", e);
+			}
 		}
 
 	}
@@ -353,7 +426,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: deleting coupon purchase failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: deleting coupon purchase failed", e);
+			}
 		}
 
 	}
@@ -374,7 +452,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: adding category failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: adding category failed", e);
+			}
 		}
 
 	}
@@ -399,7 +482,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			throw new DAOException("DAO Error: checking existence failed", e);
 		} finally {
 
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: checking existence failed", e);
+			}
 		}
 
 		return isExist;
@@ -424,7 +512,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			throw new DAOException("DAO Error: checking existence failed", e);
 		} finally {
 
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: checking existence failed", e);
+			}
 		}
 
 		return isExist;
@@ -451,7 +544,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			throw new DAOException("DAO Error: checking existence failed", e);
 		} finally {
 
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: checking existence failed", e);
+			}
 		}
 
 		return isExist;
@@ -491,7 +589,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting customer coupons failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting customer coupons failed", e);
+			}
 		}
 
 		return coupons;
@@ -532,7 +635,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting customer coupons failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting customer coupons failed", e);
+			}
 		}
 
 		return coupons;
@@ -574,7 +682,12 @@ public class CouponsDBDAO implements CouponsDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting customer coupons failed", e);
 		} finally {
-			connectionPool.restoreConnection(con);
+			try {
+				connectionPool.restoreConnection(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: getting customer coupons failed", e);
+			}
 		}
 
 		return coupons;

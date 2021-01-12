@@ -41,6 +41,8 @@ public interface CouponsDAO {
 	ArrayList<Coupon> getAllCouponsByCustomerIdAndCategory(int customerID, int categoryID) throws DAOException;
 
 	ArrayList<Coupon> getAllCouponsByCustomerIdAndMaxPrice(int customerID, double maxPrice) throws DAOException;
+
+	void deleteCouponPurchase(int couponID) throws DAOException;
 	
 
 }

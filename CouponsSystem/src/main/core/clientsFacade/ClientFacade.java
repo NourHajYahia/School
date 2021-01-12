@@ -7,11 +7,11 @@ import main.core.exceptions.FacadeException;
 
 public abstract class ClientFacade {
 
-	public CompaniesDAO companiesDAO;
+	protected CompaniesDAO companiesDAO;
 	
-	public CustomersDAO customersDAO;
+	protected CustomersDAO customersDAO;
 	
-	public CouponsDAO couponsDAO;
+	protected CouponsDAO couponsDAO;
 	
 	public abstract boolean login(String email, String password) throws FacadeException;
 	

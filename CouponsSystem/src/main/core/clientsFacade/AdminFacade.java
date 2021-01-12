@@ -3,6 +3,7 @@ package main.core.clientsFacade;
 import java.util.ArrayList;
 
 import main.core.beans.Company;
+import main.core.beans.Coupon;
 import main.core.beans.Customer;
 import main.core.dao.impel.CompaniesDBDAO;
 import main.core.dao.impel.CouponsDBDAO;
@@ -75,6 +76,11 @@ public class AdminFacade extends ClientFacade {
 		try {
 			Company currCompany = companiesDAO.getCompanyById(company.getId());
 			if (currCompany != null && company.equals(currCompany)) {
+				ArrayList<Coupon> coupons =  couponsDAO.getAllCouponsByCompanyId(company.getId());
+				for (Coupon coupon : coupons) {
+					couponsDAO.deleteCouponPurchase(coupon.getId());
+					couponsDAO.deleteCoupon(coupon.getId());
+				}
 				companiesDAO.deleteCompany(company.getId());
 			} else {
 				throw new FacadeException("AdminFacade Error: deleting company failed, did not find required company");
@@ -145,6 +151,10 @@ public class AdminFacade extends ClientFacade {
 		try {
 			Customer currCustomer = customersDAO.getCustomerById(customerID);
 			if (currCustomer != null) {
+				ArrayList<Coupon> coupons = couponsDAO.getAllCouponsByCustomerId(customerID);
+				for (Coupon coupon : coupons) {
+					couponsDAO.deleteCouponPurchase(customerID, coupon.getId());
+				}
 				customersDAO.deleteCustomer(customerID);
 			}else {
 				throw new FacadeException("AdminFacade Error: deleting customer failed, did not find required company");

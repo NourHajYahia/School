@@ -53,13 +53,18 @@ public class ConnectionPool {
 		return connection;
 	}
 
-	public synchronized void restoreConnection(Connection connection) {
-		connections.add(connection);
-		notify();
+	public synchronized void restoreConnection(Connection connection) throws ConnectionPoolException {
+		if (connections.size() < MAX) {
+			connections.add(connection);
+			notify();
+		} else {
+			throw new ConnectionPoolException("Connection Eroor: connection pool is full");
+		}
 	}
 
 	public synchronized void closeAllConnections() throws ConnectionPoolException {
 
+		if (connections.size() == MAX) {
 			for (Connection connection : connections) {
 				try {
 					connection.close();
@@ -68,8 +73,9 @@ public class ConnectionPool {
 					throw new ConnectionPoolException("Connection Error: failed to close", e);
 				}
 			}
-	
-
+		}else {
+			throw new ConnectionPoolException("Connection Eroor: connection pool is missing connectios");
+		}
 	}
 
 }
