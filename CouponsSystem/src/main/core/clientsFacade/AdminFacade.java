@@ -55,14 +55,14 @@ public class AdminFacade extends ClientFacade {
 		try {
 			Company currCompany = companiesDAO.getCompanyById(company.getId());
 			if (currCompany != null) {
-				if (currCompany.getName() == company.getName()) {
+				if (currCompany.getName().equals(company.getName())) {
 					companiesDAO.updateCompany(company);
 				} else {
 					throw new FacadeException(
 							"AdminFacade Error: updating company failed, can not update company's name");
 				}
 			} else {
-				throw new FacadeException("AdminFacade Error: updating company failed, did not find required company");
+				throw new FacadeException("AdminFacade Error: updating company failed, did not find required company id");
 			}
 		} catch (DAOException e) {
 			e.printStackTrace();
@@ -101,10 +101,10 @@ public class AdminFacade extends ClientFacade {
 		}
 	}
 
-	public Company getCompany(Company company) throws FacadeException {
+	public Company getCompany(int companyID) throws FacadeException {
 		try {
-			Company currCompany = companiesDAO.getCompanyById(company.getId());
-			if (currCompany != null && company.equals(currCompany)) {
+			Company currCompany = companiesDAO.getCompanyById(companyID);
+			if (currCompany != null) {
 				return currCompany;
 			}else {
 				throw new FacadeException("AdminFacade Error: getting company failed, did not find required company");

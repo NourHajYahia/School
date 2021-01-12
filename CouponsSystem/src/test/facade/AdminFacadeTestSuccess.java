@@ -22,15 +22,15 @@ public class AdminFacadeTestSuccess {
 			facade = new AdminFacade();
 			dropAndCreateCompanyTable();
 			System.out.println("========== Admin Login Success ==========");
-			loginAdminSuccess();
+			loginAdminSuccess("admin@admin.com","admin");
 			System.out.println("=========================================");
 			
 			System.out.println("\n========== Admin Login Failed By Email ==========");
-			loginAdminFailedEmail();
+			loginAdminSuccess("admin@aaaa.com","admin");
 			System.out.println("=========================================");
 			
 			System.out.println("\n========== Admin Login Failed By Password ==========");
-			loginAdminFailedPassword();
+			loginAdminSuccess("admin@admin.com","aaaa");
 			System.out.println("=========================================");
 			
 			System.out.println("\n========== Admin getting and viewing all Companies Success Empty table ==========");
@@ -42,11 +42,11 @@ public class AdminFacadeTestSuccess {
 			System.out.println("=========================================");
 			
 			System.out.println("\n========== Admin Adding Company failed by name ==========");
-			addCompanyWithTheSameName(getTestCompanies().get(1));
+			addCompany(getTestCompanies().get(1));
 			System.out.println("=========================================");
 			
 			System.out.println("\n========== Admin Adding Company failed by email ==========");
-			addCompanyWithTheSameEmail(getTestCompanies().get(2));
+			addCompany(getTestCompanies().get(2));
 			System.out.println("=========================================");
 			
 			System.out.println("\n========== Admin Adding Different Company Success ==========");
@@ -55,6 +55,22 @@ public class AdminFacadeTestSuccess {
 			
 			System.out.println("\n========== Admin Adding Different Company with the same password Success ==========");
 			addCompany(getTestCompanies().get(4));
+			System.out.println("=========================================");
+			
+			System.out.println("\n========== Admin getting and viewing all Companies Success ==========");
+			viewAllCompanies();
+			System.out.println("=========================================");
+			
+			System.out.println("\n========== Admin Update Company Password OR Email Success ==========");
+			updateCompany(getTestCompanies().get(5));
+			System.out.println("=========================================");
+			
+			System.out.println("\n========== Admin Update Company Name Fail ==========");
+			updateCompany(getTestCompanies().get(6));
+			System.out.println("=========================================");
+			
+			System.out.println("\n========== Admin Update Company Id Fail ==========");
+			updateCompany(getTestCompanies().get(7));
 			System.out.println("=========================================");
 			
 			System.out.println("\n========== Admin getting and viewing all Companies Success ==========");
@@ -107,43 +123,18 @@ public class AdminFacadeTestSuccess {
 		ArrayList<Company> initialCompanies = new ArrayList<Company>();
 
 		initialCompanies.add(new Company(0, "aaa", "aaa@aaa.com", "aaa"));
-		initialCompanies.add(new Company(0, "bbb", "aaa@aaa.com", "aaa"));
-		initialCompanies.add(new Company(0, "aaa", "bbb@bbb.com", "aaa"));
+		initialCompanies.add(new Company(1, "bbb", "aaa@aaa.com", "aaa"));
+		initialCompanies.add(new Company(1, "aaa", "bbb@bbb.com", "aaa"));
 		initialCompanies.add(new Company(0, "ddd", "ddd@ddd.com", "ddd"));
 		initialCompanies.add(new Company(0, "eee", "eee@eee.com", "ddd"));
-		initialCompanies.add(new Company(0, "fff", "fff@fff.com", "fff"));
-		initialCompanies.add(new Company(0, "ggg", "ggg@ggg.com", "ggg"));
-		initialCompanies.add(new Company(0, "hhh", "hhh@hhh.com", "hhh"));
+		initialCompanies.add(new Company(3, "eee", "eee1@eee1.com", "eee1"));
+		initialCompanies.add(new Company(3, "ggg", "eee1@eee1.com", "eee1"));
+		initialCompanies.add(new Company(5, "eee", "eee1@eee1.com", "eee1"));
 
 		return initialCompanies;
 	}
 
-	private static void loginAdminSuccess() {
-		String email = "admin@admin.com";
-		String password = "admin";
-
-		if (facade.login(email, password)) {
-			System.out.println("admin facade login:\nemail: " + email + "\npassword: " + password + "\nTest: success");
-		} else {
-			System.out.println("admin facade login:\nemail: " + email + "\npassword: " + password + "\nTest: failed!");
-		}
-	}
-
-	private static void loginAdminFailedEmail() {
-		String email = "admin@aaa.com";
-		String password = "admin";
-
-		if (facade.login(email, password)) {
-			System.out.println("admin facade login:\nemail: " + email + "\npassword: " + password + "\nTest: success");
-		} else {
-			System.out.println("admin facade login:\nemail: " + email + "\npassword: " + password + "\nTest: failed!");
-		}
-	}
-
-	private static void loginAdminFailedPassword() {
-		String email = "admin@admin.com";
-		String password = "aaa";
-
+	private static void loginAdminSuccess(String email, String password) {
 		if (facade.login(email, password)) {
 			System.out.println("admin facade login:\nemail: " + email + "\npassword: " + password + "\nTest: success");
 		} else {
@@ -156,35 +147,15 @@ public class AdminFacadeTestSuccess {
 		System.out.println("Company for add is: " + company);
 		try {
 			facade.addCompany(company);
-			System.out.println("Company after addition updated id: " + company);
+			System.out.println("object company after addition: " + company);
+			System.out.println("Database company by id after addition: " + getCompanyById(company.getId()));
 			System.out.println("Test: success");
 		} catch (FacadeException e) {
 			System.out.println("Test failed: " + e.getMessage());
 		}
 	}
 
-	private static void addCompanyWithTheSameName(Company company) {
-		System.out.println("admin facade addCompany: ");
-		System.out.println("Company for add is: " + company);
-		try {
-			facade.addCompany(company);
-			System.out.println("Test: success");
-		} catch (FacadeException e) {
-			System.out.println("Test failed: " + e.getMessage());
-		}
-	}
-
-	private static void addCompanyWithTheSameEmail(Company company) {
-		System.out.println("admin facade addCompany: ");
-		System.out.println("Company for add is: " + company);
-		try {
-			facade.addCompany(company);
-			System.out.println("Test: success");
-		} catch (FacadeException e) {
-			System.out.println("Test failed: " + e.getMessage());
-		}
-	}
-	
+		
 	private static void viewAllCompanies() {
 		
 		try {
@@ -201,6 +172,30 @@ public class AdminFacadeTestSuccess {
 			System.out.println("Test failed: " + e.getMessage());
 		}
 		
+	}
+	
+	private static Company getCompanyById(int companyID) {
+		Company company = null;
+		try {
+			company = facade.getCompany(companyID);
+		} catch (FacadeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return company;
+	}
+	
+	private static void updateCompany(Company company) {
+		System.out.println("admin facade update company:");
+		System.out.println("company for updateis: " + company);
+		try {
+			facade.updateCompany(company);
+			System.out.println("object company after updating: " + company);
+			System.out.println("Database company by id after updating: " + getCompanyById(company.getId()));
+			System.out.println("Test: success");
+		} catch (FacadeException e) {
+			System.out.println("Test failed: " + e.getMessage());
+		}
 	}
 
 }
