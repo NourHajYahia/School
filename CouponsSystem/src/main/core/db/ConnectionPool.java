@@ -43,7 +43,7 @@ public class ConnectionPool {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				throw new ConnectionPoolException("Connection Eroor: is interrupted", e);
+				throw new ConnectionPoolException("Connection Error: getConnection is interrupted", e);
 			}
 		}
 
@@ -53,29 +53,34 @@ public class ConnectionPool {
 		return connection;
 	}
 
-	public synchronized void restoreConnection(Connection connection) throws ConnectionPoolException {
-		if (connections.size() < MAX) {
-			connections.add(connection);
-			notify();
-		} else {
-			throw new ConnectionPoolException("Connection Eroor: connection pool is full");
-		}
+	public synchronized void restoreConnections(Connection connection) throws ConnectionPoolException {
+		connections.add(connection);
+		notify();
 	}
 
 	public synchronized void closeAllConnections() throws ConnectionPoolException {
-
-		if (connections.size() == MAX) {
-			for (Connection connection : connections) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-					throw new ConnectionPoolException("Connection Error: failed to close", e);
-				}
+		while (connections.size() != MAX) {
+			try {
+				System.out.println("connection pool is waiting for returns");
+				wait();
+			} catch (InterruptedException e) {
+				throw new ConnectionPoolException("Connection Error: restoreAllConnections is interrupted", e);
 			}
-		}else {
-			throw new ConnectionPoolException("Connection Eroor: connection pool is missing connectios");
 		}
+
+		try {
+			Iterator<Connection> it = connections.iterator();
+			while (it.hasNext()) {
+				Connection connection = it.next();
+				connection.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new ConnectionPoolException("Connection Error: failed to close", e);
+		}
+		
+		System.out.println("connection pool closed successfully");
+
 	}
 
 }

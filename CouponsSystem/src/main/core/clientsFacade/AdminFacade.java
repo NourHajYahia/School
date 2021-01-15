@@ -54,15 +54,15 @@ public class AdminFacade extends ClientFacade {
 
 		try {
 			Company currCompany = companiesDAO.getCompanyById(company.getId());
-			if (currCompany != null) {
-				if (currCompany.getName().equals(company.getName())) {
-					companiesDAO.updateCompany(company);
-				} else {
-					throw new FacadeException(
-							"AdminFacade Error: updating company failed, can not update company's name");
-				}
+			if (currCompany == null) {
+				throw new FacadeException(
+						"AdminFacade Error: updating company failed, did not find required company id");
+			} else if (!currCompany.getName().equals(company.getName())) {
+				throw new FacadeException("AdminFacade Error: updating company failed, can not update company's name");
+			} else if (companiesDAO.isCompanyExistByEmail(company.getEmail())) {
+				throw new FacadeException("AdminFacade Error: update company failed, company email already exists");
 			} else {
-				throw new FacadeException("AdminFacade Error: updating company failed, did not find required company id");
+				companiesDAO.updateCompany(company);
 			}
 		} catch (DAOException e) {
 			e.printStackTrace();
@@ -71,17 +71,19 @@ public class AdminFacade extends ClientFacade {
 
 	}
 
-	public void deleteCompany(Company company) throws FacadeException {
+	public void deleteCompany(int companyID) throws FacadeException {
 
 		try {
-			Company currCompany = companiesDAO.getCompanyById(company.getId());
-			if (currCompany != null && company.equals(currCompany)) {
-				ArrayList<Coupon> coupons =  couponsDAO.getAllCouponsByCompanyId(company.getId());
-				for (Coupon coupon : coupons) {
-					couponsDAO.deleteCouponPurchase(coupon.getId());
-					couponsDAO.deleteCoupon(coupon.getId());
+			Company currCompany = companiesDAO.getCompanyById(companyID);
+			if (currCompany != null) {
+				ArrayList<Coupon> coupons = couponsDAO.getAllCouponsByCompanyId(companyID);
+				if (!coupons.isEmpty()) {
+					for (Coupon coupon : coupons) {
+						couponsDAO.deleteCouponPurchase(coupon.getId());
+						couponsDAO.deleteCoupon(coupon.getId());
+					}
 				}
-				companiesDAO.deleteCompany(company.getId());
+				companiesDAO.deleteCompany(companyID);
 			} else {
 				throw new FacadeException("AdminFacade Error: deleting company failed, did not find required company");
 			}
@@ -106,7 +108,7 @@ public class AdminFacade extends ClientFacade {
 			Company currCompany = companiesDAO.getCompanyById(companyID);
 			if (currCompany != null) {
 				return currCompany;
-			}else {
+			} else {
 				throw new FacadeException("AdminFacade Error: getting company failed, did not find required company");
 			}
 		} catch (DAOException e) {
@@ -118,10 +120,10 @@ public class AdminFacade extends ClientFacade {
 	public void addCustomer(Customer customer) throws FacadeException {
 
 		try {
-			if (!customersDAO.isCustomerExistsByEmail(customer.getEmail())) {
-				customersDAO.addCustomer(customer);
-			} else {
+			if (customersDAO.isCustomerExistsByEmail(customer.getEmail())) {
 				throw new FacadeException("AdminFacade Error: adding customer failed, customer email already exists");
+			} else {
+				customersDAO.addCustomer(customer);
 			}
 		} catch (DAOException e) {
 			e.printStackTrace();
@@ -134,10 +136,12 @@ public class AdminFacade extends ClientFacade {
 
 		try {
 			Customer currCustomer = customersDAO.getCustomerById(customer.getId());
-			if (currCustomer != null && customer.equals(currCustomer)) {
-				customersDAO.updateCustomer(customer);
-			}else {
+			if (currCustomer == null) {
 				throw new FacadeException("AdminFacade Error: updating customer failed, did not find required company");
+			} else if (customersDAO.isCustomerExistsByEmail(customer.getEmail())) {
+				throw new FacadeException("AdminFacade Error: updating customer failed, customer email already exists");
+			} else {
+				customersDAO.updateCustomer(customer);
 			}
 
 		} catch (DAOException e) {
@@ -152,11 +156,13 @@ public class AdminFacade extends ClientFacade {
 			Customer currCustomer = customersDAO.getCustomerById(customerID);
 			if (currCustomer != null) {
 				ArrayList<Coupon> coupons = couponsDAO.getAllCouponsByCustomerId(customerID);
-				for (Coupon coupon : coupons) {
-					couponsDAO.deleteCouponPurchase(customerID, coupon.getId());
+				if (!coupons.isEmpty()) {
+					for (Coupon coupon : coupons) {
+						couponsDAO.deleteCouponPurchase(customerID, coupon.getId());
+					}
 				}
 				customersDAO.deleteCustomer(customerID);
-			}else {
+			} else {
 				throw new FacadeException("AdminFacade Error: deleting customer failed, did not find required company");
 			}
 		} catch (DAOException e) {
@@ -178,10 +184,15 @@ public class AdminFacade extends ClientFacade {
 
 	public Customer getCustomerById(int customerID) throws FacadeException {
 		try {
-			return customersDAO.getCustomerById(customerID);
+			Customer currCustomer = customersDAO.getCustomerById(customerID);
+			if (currCustomer != null) {
+				return currCustomer;
+			} else {
+				throw new FacadeException("AdminFacade Error: getting customer failed, did not find required customer");
+			}
 		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new FacadeException("AdminFacade Error: geting customer failed", e);
+			throw new FacadeException("AdminFacade Error: getting customer failed", e);
 		}
 
 	}

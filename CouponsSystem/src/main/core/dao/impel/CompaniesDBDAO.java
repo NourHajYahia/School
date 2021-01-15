@@ -51,7 +51,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new DAOException("DAO Error: checking existence failed: failed to aquire company from SQL", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: checking existence failed: failed to aquire company from SQL", e);
@@ -82,7 +82,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 		} finally {
 
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: checking existence failed", e);
@@ -111,7 +111,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new DAOException("DAO Error: checking existence failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: checking existence failed", e);
@@ -143,7 +143,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new DAOException("DAO Error: adding company failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: adding company failed", e);
@@ -170,7 +170,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new DAOException("DAO Error: updating company failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: updating company failed", e);
@@ -183,7 +183,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
 	public void deleteCompany(int companyID) throws DAOException {
 
 		Connection con = null;
-
 		try {
 			con = connectionPool.getConnection();
 			String sql = "delete from companies where id=?";
@@ -195,9 +194,8 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: deleting company failed", e);
 		} finally {
-
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: deleting company failed", e);
@@ -216,18 +214,13 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			String sql = "select * from companies";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				Company company;
-				do {
-					company = new Company();
-					company.setId(rs.getInt("id"));
-					company.setName(rs.getString("name"));
-					company.setEmail(rs.getString("email"));
-					company.setPassword(rs.getString("password"));
-					companies.add(company);
-				} while(rs.next());
-			} else {
-				return null;
+			while (rs.next()) {
+				Company company = new Company();
+				company.setId(rs.getInt("id"));
+				company.setName(rs.getString("name"));
+				company.setEmail(rs.getString("email"));
+				company.setPassword(rs.getString("password"));
+				companies.add(company);
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
@@ -236,7 +229,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 		} finally {
 
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: getting all companies failed", e);
@@ -272,7 +265,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new DAOException("DAO Error: getting company failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: getting company failed", e);
@@ -291,7 +284,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 		Company company;
 
 		try {
-			
+
 			con = connectionPool.getConnection();
 			String sql = "select id from companies where email = ? AND password = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
@@ -313,7 +306,7 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			throw new DAOException("DAO Error: getting company failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: getting company failed", e);
@@ -322,7 +315,5 @@ public class CompaniesDBDAO implements CompaniesDAO {
 
 		return company;
 	}
-
-	
 
 }

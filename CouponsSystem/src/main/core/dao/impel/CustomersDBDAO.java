@@ -45,7 +45,7 @@ public class CustomersDBDAO implements CustomersDAO {
 			throw new DAOException("DAO Error: checking existence failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: checking existence failed", e);
@@ -74,11 +74,11 @@ public class CustomersDBDAO implements CustomersDAO {
 			throw new DAOException("DAO Error: checking existence failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: checking existence failed", e);
-			}	
+			}
 		}
 
 		return isExist;
@@ -92,13 +92,13 @@ public class CustomersDBDAO implements CustomersDAO {
 		try {
 			con = connectionPool.getConnection();
 			String sql = "insert into customers values(?,?,?,?,?)";
-			PreparedStatement pstmt = con.prepareStatement(sql);
+			PreparedStatement pstmt = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			pstmt.setInt(1, customer.getId());
 			pstmt.setString(2, customer.getFirstName());
 			pstmt.setString(3, customer.getLastName());
 			pstmt.setString(4, customer.getEmail());
 			pstmt.setString(5, customer.getPassword());
-			pstmt.executeUpdate(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+			pstmt.executeUpdate();
 			ResultSet resKeys = pstmt.getGeneratedKeys();
 			resKeys.next();
 			customer.setId(resKeys.getInt(1));
@@ -107,7 +107,7 @@ public class CustomersDBDAO implements CustomersDAO {
 			throw new DAOException("DAO Error: adding company failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: checking existence failed", e);
@@ -122,7 +122,7 @@ public class CustomersDBDAO implements CustomersDAO {
 
 		try {
 			con = connectionPool.getConnection();
-			String sql = "update customers set firstname=?, lastname=?, email=?, password=? where id=?";
+			String sql = "update customers set first_name=?, last_name=?, email=?, password=? where id=?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 
 			pstmt.setString(1, customer.getFirstName());
@@ -136,7 +136,7 @@ public class CustomersDBDAO implements CustomersDAO {
 			throw new DAOException("DAO Error: updating company failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: updating company failed", e);
@@ -161,7 +161,7 @@ public class CustomersDBDAO implements CustomersDAO {
 			throw new DAOException("DAO Error: deleting company failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: deleting company failed", e);
@@ -174,22 +174,20 @@ public class CustomersDBDAO implements CustomersDAO {
 	public ArrayList<Customer> getAllCustomers() throws DAOException {
 
 		Connection con = null;
-		ArrayList<Customer> customers = new ArrayList<Customer>();
+		ArrayList<Customer> customers = new ArrayList<Customer>();;
 		try {
 			con = connectionPool.getConnection();
 			String sql = "select * from customers";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			ResultSet rs = pstmt.executeQuery();
-			if (rs.next()) {
-				while (rs.next()) {
-					Customer customer = new Customer();
-					customer.setId(rs.getInt("id"));
-					customer.setFirstName(rs.getString("firstname"));
-					customer.setLastName(rs.getString("lastname"));
-					customer.setEmail(rs.getString("email"));
-					customer.setPassword(rs.getString("password"));
-					customers.add(customer);
-				}
+			while (rs.next()) {
+				Customer customer = new Customer();
+				customer.setId(rs.getInt("id"));
+				customer.setFirstName(rs.getString("first_name"));
+				customer.setLastName(rs.getString("last_name"));
+				customer.setEmail(rs.getString("email"));
+				customer.setPassword(rs.getString("password"));
+				customers.add(customer);
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
@@ -197,7 +195,7 @@ public class CustomersDBDAO implements CustomersDAO {
 			throw new DAOException("DAO Error: getting all companies failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: getting all companies failed", e);
@@ -222,8 +220,8 @@ public class CustomersDBDAO implements CustomersDAO {
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				customer = new Customer(customerID);
-				customer.setFirstName(rs.getString("firstname"));
-				customer.setLastName(rs.getString("lastname"));
+				customer.setFirstName(rs.getString("first_name"));
+				customer.setLastName(rs.getString("last_name"));
 				customer.setEmail(rs.getString("email"));
 				customer.setPassword(rs.getString("password"));
 			} else {
@@ -234,7 +232,7 @@ public class CustomersDBDAO implements CustomersDAO {
 			throw new DAOException("DAO Error: getting company failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: getting company failed", e);
@@ -244,7 +242,7 @@ public class CustomersDBDAO implements CustomersDAO {
 		return customer;
 
 	}
-	
+
 	@Override
 	public Customer getCustomerByEmail(String email) throws DAOException {
 
@@ -259,8 +257,8 @@ public class CustomersDBDAO implements CustomersDAO {
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				customer = new Customer();
-				customer.setFirstName(rs.getString("firstname"));
-				customer.setLastName(rs.getString("lastname"));
+				customer.setFirstName(rs.getString("first_name"));
+				customer.setLastName(rs.getString("last_name"));
 				customer.setEmail(rs.getString("email"));
 				customer.setPassword(rs.getString("password"));
 			} else {
@@ -271,7 +269,7 @@ public class CustomersDBDAO implements CustomersDAO {
 			throw new DAOException("DAO Error: getting company failed", e);
 		} finally {
 			try {
-				connectionPool.restoreConnection(con);
+				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
 				e.printStackTrace();
 				throw new DAOException("DAO Error: getting company failed", e);
