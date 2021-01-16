@@ -23,6 +23,20 @@ public class Coupon {
 		super();
 		this.id = id;
 	}
+	
+	
+	public Coupon(Category category, String title, String description, LocalDate startDate, LocalDate endDate,
+			int amount, double price, String image) {
+		super();
+		this.category = category;
+		this.title = title;
+		this.description = description;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.amount = amount;
+		this.price = price;
+		this.image = image;
+	}
 
 	public Coupon(int id, int companyID, Category category, String title, String description, LocalDate startDate,
 			LocalDate endDate, int amount, double price, String image) {

@@ -12,6 +12,10 @@ import main.core.exceptions.FacadeException;
 
 public class CompanyFacade extends ClientFacade {
 
+	public int getCompanyID() {
+		return companyID;
+	}
+
 	private int companyID;
 
 	public CompanyFacade() throws FacadeException {
@@ -28,8 +32,8 @@ public class CompanyFacade extends ClientFacade {
 	public boolean login(String email, String password) throws FacadeException {
 
 		try {
-			if (companiesDAO.isCompanyExistByEmailAndPassword(email, password)) {
-				companyID = companiesDAO.getCompanyByEmailAndPassword(email, password).getId();
+			companyID = companiesDAO.getCompanyByEmailAndPassword(email, password);
+			if (companyID != -1) {
 				return true;
 			} else {
 				return false;
@@ -43,18 +47,15 @@ public class CompanyFacade extends ClientFacade {
 	public void addCoupon(Coupon coupon) throws FacadeException {
 
 		try {
-			if (!couponsDAO.isCouponExistByTitleAndCompanyId(coupon.getTitle(), companyID) && coupon.getCompanyID() == companyID) {
-				if (couponsDAO.isCatogeryExist(coupon.getCategory().ordinal())) {
-					couponsDAO.addCategory(coupon.getCategory());
-				}
+			coupon.setCompanyID(companyID);
+			if (!couponsDAO.isCouponExistByTitleAndCompanyId(coupon.getTitle(), companyID)) {
 				couponsDAO.addCoupon(coupon);
 			} else {
-				throw new FacadeException(
-						"CompanyFacade Error: adding company failed: coupon title already exist in this company");
+				throw new FacadeException("CompanyFacade Error: adding company failed: coupon title already exist in this company");
 			}
-		} catch (DAOException | FacadeException e) {
+		} catch (DAOException e) {
 			e.printStackTrace();
-			throw new FacadeException("CompanyFacade Error: adding company failed", e);
+			throw new FacadeException("CompanyFacade Error: adding company failed"+ e.getMessage());
 		}
 
 	}
@@ -66,7 +67,12 @@ public class CompanyFacade extends ClientFacade {
 			if (coupon.getCompanyID() == companyID) {
 				currCoupon = couponsDAO.getCouponById(coupon.getId());
 				if (currCoupon != null) {
-					couponsDAO.updateCoupon(coupon);
+					if (!couponsDAO.isCouponExistByTitleAndCompanyId(coupon.getTitle(), companyID)) {
+						
+						couponsDAO.updateCoupon(coupon);
+					}else {
+						throw new FacadeException("CompanyFacade Error: updating company failed: coupon title already exist in this company");
+					}
 				} else {
 					throw new FacadeException("CompanyFacade Error: updating company failed: coupon does not exist");
 				}

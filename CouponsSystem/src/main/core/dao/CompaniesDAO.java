@@ -13,7 +13,7 @@ public interface CompaniesDAO {
 
 	boolean isCompanyExistByName(String companyName) throws DAOException;
 
-	Company getCompanyByEmailAndPassword(String email, String password) throws DAOException;
+	int getCompanyByEmailAndPassword(String email, String password) throws DAOException;
 
 	void addCompany(Company company) throws DAOException;
 

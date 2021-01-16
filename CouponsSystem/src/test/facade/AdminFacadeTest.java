@@ -12,10 +12,9 @@ import main.core.db.ConnectionPool;
 import main.core.exceptions.ConnectionPoolException;
 import main.core.exceptions.FacadeException;
 
-public class AdminFacadeTestSuccess {
+public class AdminFacadeTest {
 
 	static AdminFacade facade;
-	static Company customer;
 
 	public static void main(String[] args) {
 

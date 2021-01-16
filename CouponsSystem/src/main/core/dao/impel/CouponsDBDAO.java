@@ -36,14 +36,10 @@ public class CouponsDBDAO implements CouponsDAO {
 		try {
 			con = connectionPool.getConnection();
 			String sql = "insert into coupons values(?,?,?,?,?,?,?,?,?,?)";
-			PreparedStatement pstmt = con.prepareStatement(sql);
+			PreparedStatement pstmt = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 			pstmt.setInt(1, coupon.getId());
 			pstmt.setInt(2, coupon.getCompanyID());
 			pstmt.setInt(3, coupon.getCategory().ordinal());
-
-			// adding new category if it not exists.
-			addCategory(coupon.getCategory());
-
 			pstmt.setString(4, coupon.getTitle());
 			pstmt.setString(5, coupon.getDescription());
 			pstmt.setDate(6, Date.valueOf(coupon.getStartDate()));
@@ -51,7 +47,7 @@ public class CouponsDBDAO implements CouponsDAO {
 			pstmt.setInt(8, coupon.getAmount());
 			pstmt.setDouble(9, coupon.getPrice());
 			pstmt.setString(10, coupon.getImage());
-			pstmt.executeUpdate(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+			pstmt.executeUpdate();
 			ResultSet resKeys = pstmt.getGeneratedKeys();
 			resKeys.next();
 			coupon.setId(resKeys.getInt(1));
@@ -460,7 +456,7 @@ public class CouponsDBDAO implements CouponsDAO {
 			String sql = "select * from coupons where title = ? and company_id = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, couponTitle);
-			pstmt.setInt(1, companyID);
+			pstmt.setInt(2, companyID);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				isExist = true;

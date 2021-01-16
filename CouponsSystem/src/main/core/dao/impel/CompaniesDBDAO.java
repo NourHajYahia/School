@@ -278,10 +278,10 @@ public class CompaniesDBDAO implements CompaniesDAO {
 	}
 
 	@Override
-	public Company getCompanyByEmailAndPassword(String email, String password) throws DAOException {
+	public int getCompanyByEmailAndPassword(String email, String password) throws DAOException {
 
 		Connection con = null;
-		Company company;
+		int CompanyID = -1;
 
 		try {
 
@@ -292,13 +292,9 @@ public class CompaniesDBDAO implements CompaniesDAO {
 			pstmt.setString(2, password);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
-				company = new Company();
-				company.setId(rs.getInt("id"));
-				company.setName(rs.getString("name"));
-				company.setEmail(rs.getString("email"));
-				company.setPassword(rs.getString("password"));
+				return CompanyID = rs.getInt("id");
 			} else {
-				return null;
+				return CompanyID;
 			}
 
 		} catch (ConnectionPoolException | SQLException e) {
@@ -312,8 +308,6 @@ public class CompaniesDBDAO implements CompaniesDAO {
 				throw new DAOException("DAO Error: getting company failed", e);
 			}
 		}
-
-		return company;
 	}
 
 }
