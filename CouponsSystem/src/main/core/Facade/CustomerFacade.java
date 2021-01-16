@@ -1,4 +1,4 @@
-package main.core.clientsFacade;
+package main.core.Facade;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import main.core.beans.Category;
 import main.core.beans.Coupon;
 import main.core.beans.Customer;
-import main.core.dao.impel.CouponsDBDAO;
-import main.core.dao.impel.CustomersDBDAO;
+import main.core.dao.impl.CouponsDBDAO;
+import main.core.dao.impl.CustomersDBDAO;
 import main.core.exceptions.DAOException;
 import main.core.exceptions.FacadeException;
 

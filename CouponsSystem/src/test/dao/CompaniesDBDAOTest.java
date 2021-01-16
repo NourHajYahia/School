@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import main.core.beans.Company;
 import main.core.dao.CompaniesDAO;
-import main.core.dao.impel.CompaniesDBDAO;
+import main.core.dao.impl.CompaniesDBDAO;
 import main.core.exceptions.DAOException;
 
 public class CompaniesDBDAOTest {

@@ -1,4 +1,4 @@
-package main.core.clientsLoginManager;
+package main.core.LoginManager;
 
 public enum ClientType {
 	

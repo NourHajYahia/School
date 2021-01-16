@@ -5,9 +5,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import main.core.Facade.AdminFacade;
 import main.core.beans.Company;
 import main.core.beans.Customer;
-import main.core.clientsFacade.AdminFacade;
 import main.core.db.ConnectionPool;
 import main.core.exceptions.ConnectionPoolException;
 import main.core.exceptions.FacadeException;

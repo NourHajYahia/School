@@ -1,7 +1,7 @@
-package main.core.clientsLoginManager;
+package main.core.LoginManager;
 
-import main.core.clientsFacade.AdminFacade;
-import main.core.clientsFacade.ClientFacade;
+import main.core.Facade.AdminFacade;
+import main.core.Facade.ClientFacade;
 import main.core.exceptions.FacadeException;
 import main.core.exceptions.LoginManagerException;
 

@@ -1,4 +1,4 @@
-package main.core.dao.impel;
+package main.core.dao.impl;
 
 import java.sql.Connection;
 import java.sql.Date;

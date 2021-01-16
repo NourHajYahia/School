@@ -1,4 +1,4 @@
-package main.core.clientsFacade;
+package main.core.Facade;
 
 import main.core.dao.CompaniesDAO;
 import main.core.dao.CouponsDAO;

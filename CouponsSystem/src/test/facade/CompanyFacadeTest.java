@@ -6,9 +6,9 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+import main.core.Facade.CompanyFacade;
 import main.core.beans.Category;
 import main.core.beans.Coupon;
-import main.core.clientsFacade.CompanyFacade;
 import main.core.db.ConnectionPool;
 import main.core.exceptions.ConnectionPoolException;
 import main.core.exceptions.FacadeException;
