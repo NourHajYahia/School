@@ -5,6 +5,10 @@ import java.util.List;
 
 public class Customer {
 
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	private int id;
 	private String firstName;
 	private String lastName;
@@ -12,20 +16,11 @@ public class Customer {
 	private String password;
 	private List<Coupon> coupons = new ArrayList<>();
 
-	/**
-	 * @param id
-	 */
+
 	public Customer(int id) {
-		super();
 		this.id = id;
 	}
 
-	/**
-	 * 
-	 */
-	public Customer() {
-		super();
-	}
 
 	public Customer(int id, String firstName, String lastName, String email, String password) {
 		super();
@@ -35,6 +30,20 @@ public class Customer {
 		this.email = email;
 		this.password = password;
 	}
+	
+	
+	public Customer() {
+	}
+
+
+	public Customer(String firstName, String lastName, String email, String password) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
+	}
+
 
 	@Override
 	public String toString() {
@@ -46,9 +55,6 @@ public class Customer {
 		return id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getFirstName() {
 		return firstName;

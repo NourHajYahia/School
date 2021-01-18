@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Company {
+	
+	
+	public Company() {
+
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	private int id;
 	private String name;
@@ -11,25 +20,24 @@ public class Company {
 	private String password;
 	private List<Coupon> coupons = new ArrayList<>();
 
-	public Company() {
-		super();
-	}
 
 	public Company(int id) {
-		super();
 		this.id = id;
 	}
 	
 	public Company(int id, String name, String email, String password) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 	}
-
-	public void setId(int id) {
-		this.id = id;
+	
+	
+	public Company(String name, String email, String password) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.password = password;
 	}
 
 	public void setName(String name) {

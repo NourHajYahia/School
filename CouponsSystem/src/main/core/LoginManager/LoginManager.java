@@ -9,11 +9,10 @@ public class LoginManager {
 
 	private static LoginManager instance;
 
-	public LoginManager() {
-		super();
+	private LoginManager() {
 	}
 
-	public LoginManager getInstance() {
+	public static synchronized LoginManager getInstance() {
 		if (instance == null) {
 			instance = new LoginManager();
 			return instance;
@@ -21,7 +20,7 @@ public class LoginManager {
 		return instance;
 	}
 
-	public ClientFacade login(String email, String password, ClientType clientType) throws LoginManagerException {
+	public synchronized ClientFacade login(String email, String password, ClientType clientType) throws LoginManagerException {
 
 		ClientFacade client;
 

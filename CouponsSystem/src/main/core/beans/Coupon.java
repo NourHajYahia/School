@@ -3,6 +3,15 @@ package main.core.beans;
 import java.time.LocalDate;
 
 public class Coupon {
+	
+
+	public Coupon() {
+	}
+
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	private int id;
 	private int companyID;
@@ -15,12 +24,8 @@ public class Coupon {
 	private double price;
 	private String image;
 
-	public Coupon() {
-		super();
-	}
 
 	public Coupon(int id) {
-		super();
 		this.id = id;
 	}
 	
@@ -55,10 +60,6 @@ public class Coupon {
 
 	public int getId() {
 		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public int getCompanyID() {
