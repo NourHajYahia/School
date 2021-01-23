@@ -244,19 +244,21 @@ public class CustomersDBDAO implements CustomersDAO {
 	}
 
 	@Override
-	public Customer getCustomerByEmail(String email) throws DAOException {
+	public Customer getCustomerByEmailAndPassword(String email, String password) throws DAOException {
 
 		Connection con = null;
 		Customer customer;
 
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from customers where id=?";
+			String sql = "select * from customers where email = ? and password = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, email);
+			pstmt.setString(2, password);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				customer = new Customer();
+				customer.setId(rs.getInt("id"));
 				customer.setFirstName(rs.getString("first_name"));
 				customer.setLastName(rs.getString("last_name"));
 				customer.setEmail(rs.getString("email"));

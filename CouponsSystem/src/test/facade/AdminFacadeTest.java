@@ -5,18 +5,24 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import main.core.Facade.AdminFacade;
 import main.core.beans.Company;
 import main.core.beans.Customer;
 import main.core.db.ConnectionPool;
 import main.core.exceptions.ConnectionPoolException;
 import main.core.exceptions.FacadeException;
+import main.core.facade.AdminFacade;
+import main.core.facade.ClientFacade;
 
 public class AdminFacadeTest {
 
 	private AdminFacade facade;
-	
-	public void testAll() {
+
+	public AdminFacadeTest(ClientFacade facade) {
+		this.facade = (AdminFacade) facade;
+	}
+
+
+	public void runTest() {
 		Company company;
 		Customer customer;
 		int customerID;
@@ -24,19 +30,19 @@ public class AdminFacadeTest {
 		restoreCompaniesTableToDefault();
 		restoreCustomersTableToDefault();
 		System.out.println();
-		System.out.println("____________________ adminFacadeTest __________________________");
+		System.out.println("__________________________________________ adminFacadeTest _______________________________________________");
 		System.out.println();
 
 		try {
 			facade = new AdminFacade();
 			// viewing all companies within database companies table
-			System.out.println("___________________ getAllCompaniesTest __________________________");
+			System.out.println("________________________________________ getAllCompaniesTest _______________________________________________");
 			viewAllCompaniesTest();
 			System.out.println();
 			// ------------------------------------------------------------------------------------------------------
 
 			// Testing addCompany function requirements
-			System.out.println("___________________ addCompanyTest __________________________");
+			System.out.println("_________________________________________ addCompanyTest _______________________________________________");
 			System.out.println("\n1. Adding first legit company:-");
 			company = new Company(0, "aaa", "aaa@aaa.com", "aaa");
 			addCustomerTest(company);
@@ -60,13 +66,15 @@ public class AdminFacadeTest {
 			// -------------------------------------------------------------------------------------------------------
 
 			// viewing all companies within database companies table
-			System.out.println("___________________ getAllCompaniesTest __________________________");
+			System.out.println("________________________________________ getAllCompaniesTest _______________________________________________");
 			viewAllCompaniesTest();
 			System.out.println();
 			// ------------------------------------------------------------------------------------------------------
-
+		
+			
+			
 			// Testing updateCompany function requirements
-			System.out.println("___________________ updateCompanyTest __________________________");
+			System.out.println("________________________________________ updateCompanyTest _______________________________________________");
 			System.out.println("\n1. updating company password:-");
 			company = new Company(3, "ccc", "ccc1@ccc1.com", "ccc");
 			updateCompanyTest(company);
@@ -90,13 +98,13 @@ public class AdminFacadeTest {
 			// -------------------------------------------------------------------------------------------------------
 
 			// viewing all companies within database companies table
-			System.out.println("___________________ getAllCompaniesTest __________________________");
+			System.out.println("________________________________________ getAllCompaniesTest _______________________________________________");
 			viewAllCompaniesTest();
 			System.out.println();
 			// ------------------------------------------------------------------------------------------------------
 
 			// Testing deleteCompany function requirements
-			System.out.println("___________________ deleteCompanyTest __________________________");
+			System.out.println("________________________________________ deleteCompanyTest _______________________________________________");
 			System.out.println("\n1. deleting company by id:-");
 			companyID = 3;
 			deleteCompanyTest(companyID);
@@ -106,13 +114,13 @@ public class AdminFacadeTest {
 			// -------------------------------------------------------------------------------------------------------
 
 			// viewing all companies within database companies table
-			System.out.println("___________________ getAllCompaniesTest __________________________");
+			System.out.println("________________________________________ getAllCompaniesTest _______________________________________________");
 			viewAllCompaniesTest();
 			System.out.println();
 			// ------------------------------------------------------------------------------------------------------
 
 			// Testing getCompanyById function requirements
-			System.out.println("___________________ getCompanyByIdTest __________________________");
+			System.out.println("________________________________________ getCompanyByIdTest _______________________________________________");
 			System.out.println("\n1. viewing company by id:-");
 			companyID = 1;
 			getCompanyByIdTest(companyID);
@@ -124,13 +132,13 @@ public class AdminFacadeTest {
 			// ------------------------------------------------------------------------------------------------------
 
 			// viewing all customers within database customers table
-			System.out.println("___________________ getAllCustomersTest __________________________");
+			System.out.println("________________________________________ getAllCustomersTest _______________________________________________");
 			viewAllCustomersTest();
 			System.out.println();
 			// ------------------------------------------------------------------------------------------------------
 
 			// Testing addCustomer function requirements
-			System.out.println("___________________ addCustomerTest __________________________");
+			System.out.println("________________________________________ addCustomerTest _______________________________________________");
 			System.out.println("\n1. Adding first legit customer:-");
 			customer = new Customer(0, "aaa", "aaa", "aaa@aaa.com", "aaa");
 			addCustomerTest(customer);
@@ -150,13 +158,13 @@ public class AdminFacadeTest {
 			// -------------------------------------------------------------------------------------------------------
 
 			// viewing all customers within database customers table
-			System.out.println("___________________ getAllCustomersTest __________________________");
+			System.out.println("________________________________________ getAllCustomersTest _______________________________________________");
 			viewAllCustomersTest();
 			System.out.println();
 			// ------------------------------------------------------------------------------------------------------
 
 			// Testing updateCustomer function requirements
-			System.out.println("___________________ updateCustomerTest __________________________");
+			System.out.println("________________________________________ updateCustomerTest _______________________________________________");
 			System.out.println("\n1. update legit customer:-");
 			customer = new Customer(2, "bbb", "bbb", "bbb1@bbb1.com", "bbb");
 			updateCustomrsTest(customer);
@@ -171,13 +179,13 @@ public class AdminFacadeTest {
 			// -------------------------------------------------------------------------------------------------------
 
 			// viewing all customers within database customers table
-			System.out.println("___________________ getAllCustomersTest __________________________");
+			System.out.println("________________________________________ getAllCustomersTest _______________________________________________");
 			viewAllCustomersTest();
 			System.out.println();
 			// ------------------------------------------------------------------------------------------------------
 
 			// Testing deleteCustomer function requirements
-			System.out.println("___________________ deleteCustomerTest __________________________");
+			System.out.println("________________________________________ deleteCustomerTest _______________________________________________");
 			System.out.println("\n1. deleting custemer by id:-");
 			customerID = 2;
 			deleteCustomerTest(customerID);
@@ -187,13 +195,13 @@ public class AdminFacadeTest {
 			// -------------------------------------------------------------------------------------------------------
 
 			// viewing all customers within database customers table
-			System.out.println("___________________ getAllCustomersTest __________________________");
+			System.out.println("________________________________________ getAllCustomersTest _______________________________________________");
 			viewAllCustomersTest();
 			System.out.println();
 			// ------------------------------------------------------------------------------------------------------
 
 			// Testing getCustomerById function requirements
-			System.out.println("___________________ getCustomerByIdTest __________________________");
+			System.out.println("_______________________________________ getCustomerByIdTest _______________________________________________");
 			System.out.println("\n1. viewing custemer by id:-");
 			customerID = 1;
 			getCustomerByIdTest(customerID);
@@ -208,11 +216,6 @@ public class AdminFacadeTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public AdminFacadeTest(AdminFacade facade) {
-		super();
-		this.facade = facade;
 	}
 
 	private void restoreCompaniesTableToDefault() {
@@ -229,13 +232,12 @@ public class AdminFacadeTest {
 			Statement pstmt2 = con.createStatement();
 			pstmt2.executeUpdate(sqlResetIncrement);
 		} catch (ConnectionPoolException | SQLException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		} finally {
 			try {
 				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 		}
 	}
@@ -254,13 +256,12 @@ public class AdminFacadeTest {
 			Statement pstmt2 = con.createStatement();
 			pstmt2.executeUpdate(sqlResetIncrement);
 		} catch (ConnectionPoolException | SQLException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		} finally {
 			try {
 				connectionPool.restoreConnections(con);
 			} catch (ConnectionPoolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println(e.getMessage());
 			}
 		}
 	}
@@ -354,7 +355,7 @@ public class AdminFacadeTest {
 	}
 
 	private void deleteCustomerTest(int CustomerID) {
-		System.out.println("-- Company Id for delete is: " + CustomerID);
+		System.out.println("-- Customer Id for delete is: " + CustomerID);
 		try {
 			facade.deleteCustomer(CustomerID);
 			System.out.println("-- Customer deleted");

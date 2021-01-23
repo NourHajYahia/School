@@ -16,7 +16,7 @@ public interface CouponsDAO {
 
 	void deleteCoupon(int couponID) throws DAOException;
 
-	ArrayList<Coupon> getAllCoupons() throws DAOException;
+	ArrayList<Coupon> getAllExpiredCoupons() throws DAOException;
 
 	Coupon getCouponById(int couponID) throws DAOException;
 

@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -32,7 +33,7 @@ public class CouponsDBDAO implements CouponsDAO {
 	public void addCoupon(Coupon coupon) throws DAOException {
 
 		Connection con = null;
-
+		
 		try {
 			con = connectionPool.getConnection();
 			String sql = "insert into coupons values(?,?,?,?,?,?,?,?,?,?)";
@@ -42,8 +43,8 @@ public class CouponsDBDAO implements CouponsDAO {
 			pstmt.setInt(3, coupon.getCategory().ordinal());
 			pstmt.setString(4, coupon.getTitle());
 			pstmt.setString(5, coupon.getDescription());
-			pstmt.setDate(6, Date.valueOf(coupon.getStartDate()));
-			pstmt.setDate(7, Date.valueOf(coupon.getEndDate()));
+			pstmt.setTimestamp(6, new Timestamp(coupon.getStartDate().getTime()));
+			pstmt.setTimestamp(7, new Timestamp(coupon.getEndDate().getTime()));
 			pstmt.setInt(8, coupon.getAmount());
 			pstmt.setDouble(9, coupon.getPrice());
 			pstmt.setString(10, coupon.getImage());
@@ -77,14 +78,10 @@ public class CouponsDBDAO implements CouponsDAO {
 
 			pstmt.setInt(1, coupon.getCompanyID());
 			pstmt.setInt(2, coupon.getCategory().ordinal());
-
-			// adding new category if it not exists.
-			// addCategory(coupon.getCategory());
-
 			pstmt.setString(3, coupon.getTitle());
 			pstmt.setString(4, coupon.getDescription());
-			pstmt.setDate(5, Date.valueOf(coupon.getStartDate()));
-			pstmt.setDate(6, Date.valueOf(coupon.getEndDate()));
+			pstmt.setTimestamp(5, new Timestamp(coupon.getStartDate().getTime()));
+			pstmt.setTimestamp(6, new Timestamp(coupon.getEndDate().getTime()));
 			pstmt.setInt(7, coupon.getAmount());
 			pstmt.setDouble(8, coupon.getPrice());
 			pstmt.setString(9, coupon.getImage());
@@ -131,14 +128,15 @@ public class CouponsDBDAO implements CouponsDAO {
 	}
 
 	@Override
-	public ArrayList<Coupon> getAllCoupons() throws DAOException {
+	public ArrayList<Coupon> getAllExpiredCoupons() throws DAOException {
 
 		Connection con = null;
 		ArrayList<Coupon> coupons = new ArrayList<Coupon>();
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from coupons";
+			String sql = "select * from coupons where end_date < ? ";
 			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setDate(1, Date.valueOf(LocalDate.now()));
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				while (rs.next()) {
@@ -148,17 +146,14 @@ public class CouponsDBDAO implements CouponsDAO {
 					coupon.setCategory(Category.values()[rs.getInt("category_id")]);
 					coupon.setTitle(rs.getString("title"));
 					coupon.setDescription(rs.getString("description"));
-					coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
-					coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+					coupon.setStartDate(rs.getTimestamp("start_date"));
+					coupon.setEndDate(rs.getTimestamp("end_date"));
 					coupon.setAmount(rs.getInt("amount"));
 					coupon.setPrice(rs.getInt("price"));
 					coupon.setImage(rs.getString("image"));
 					coupons.add(coupon);
 				}
-			} else {
-				return null;
 			}
-
 		} catch (ConnectionPoolException | SQLException e) {
 			e.printStackTrace();
 			throw new DAOException("DAO Error: getting all coupons failed", e);
@@ -182,9 +177,10 @@ public class CouponsDBDAO implements CouponsDAO {
 		ArrayList<Coupon> coupons = new ArrayList<Coupon>();
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from coupons where company_id = ?";
+			String sql = "select * from coupons where company_id = ? and end_date > ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, companyID);
+			pstmt.setDate(2, Date.valueOf(LocalDate.now()));
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				Coupon coupon = new Coupon();
@@ -193,8 +189,8 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setCategory(Category.values()[rs.getInt("category_id")]);
 				coupon.setTitle(rs.getString("title"));
 				coupon.setDescription(rs.getString("description"));
-				coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
-				coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+				coupon.setStartDate(rs.getTimestamp("start_date"));
+				coupon.setEndDate(rs.getTimestamp("end_date"));
 				coupon.setAmount(rs.getInt("amount"));
 				coupon.setPrice(rs.getInt("price"));
 				coupon.setImage(rs.getString("image"));
@@ -223,10 +219,11 @@ public class CouponsDBDAO implements CouponsDAO {
 		ArrayList<Coupon> coupons = new ArrayList<Coupon>();
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from coupons where company_id = ? and category_id =?";
+			String sql = "select * from coupons where company_id = ? and category_id =? and end_date > ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, companyID);
 			pstmt.setInt(2, categoryID);
+			pstmt.setDate(3, Date.valueOf(LocalDate.now()));
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				Coupon coupon = new Coupon();
@@ -235,8 +232,8 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setCategory(Category.values()[rs.getInt("category_id")]);
 				coupon.setTitle(rs.getString("title"));
 				coupon.setDescription(rs.getString("description"));
-				coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
-				coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+				coupon.setStartDate(rs.getTimestamp("start_date"));
+				coupon.setEndDate(rs.getTimestamp("end_date"));
 				coupon.setAmount(rs.getInt("amount"));
 				coupon.setPrice(rs.getInt("price"));
 				coupon.setImage(rs.getString("image"));
@@ -265,10 +262,11 @@ public class CouponsDBDAO implements CouponsDAO {
 		ArrayList<Coupon> coupons = new ArrayList<Coupon>();
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from coupons where company_id = ? and price =?";
+			String sql = "select * from coupons where company_id = ? and price <= ? and end_date > ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, companyID);
 			pstmt.setDouble(2, maxPrice);
+			pstmt.setDate(3, Date.valueOf(LocalDate.now()));
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				Coupon coupon = new Coupon();
@@ -277,8 +275,8 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setCategory(Category.values()[rs.getInt("category_id")]);
 				coupon.setTitle(rs.getString("title"));
 				coupon.setDescription(rs.getString("description"));
-				coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
-				coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+				coupon.setStartDate(rs.getTimestamp("start_date"));
+				coupon.setEndDate(rs.getTimestamp("end_date"));
 				coupon.setAmount(rs.getInt("amount"));
 				coupon.setPrice(rs.getInt("price"));
 				coupon.setImage(rs.getString("image"));
@@ -318,8 +316,8 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setCategory(Category.values()[rs.getInt("category_id")]);
 				coupon.setTitle(rs.getString("title"));
 				coupon.setDescription(rs.getString("description"));
-				coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
-				coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+				coupon.setStartDate(rs.getTimestamp("start_date"));
+				coupon.setEndDate(rs.getTimestamp("end_date"));
 				coupon.setAmount(rs.getInt("amount"));
 				coupon.setPrice(rs.getInt("price"));
 				coupon.setImage(rs.getString("image"));
@@ -518,7 +516,7 @@ public class CouponsDBDAO implements CouponsDAO {
 			String sql = "select * from customers_vs_coupons where customer_id = ? and coupon_id = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, couponID);
-			pstmt.setInt(1, customerID);
+			pstmt.setInt(2, customerID);
 			ResultSet rs = pstmt.executeQuery();
 			if (rs.next()) {
 				isExist = true;
@@ -546,7 +544,7 @@ public class CouponsDBDAO implements CouponsDAO {
 		ArrayList<Coupon> coupons = new ArrayList<Coupon>();
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from coupons where id = (select coupon_id from customers_vs_coupons where customer_id = ?)";
+			String sql = "select * from coupons where id in (select coupon_id from customers_vs_coupons where customer_id = ?)";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, customerID);
 			ResultSet rs = pstmt.executeQuery();
@@ -557,8 +555,8 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setCategory(Category.values()[rs.getInt("category_id")]);
 				coupon.setTitle(rs.getString("title"));
 				coupon.setDescription(rs.getString("description"));
-				coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
-				coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+				coupon.setStartDate(rs.getTimestamp("start_date"));
+				coupon.setEndDate(rs.getTimestamp("end_date"));
 				coupon.setAmount(rs.getInt("amount"));
 				coupon.setPrice(rs.getInt("price"));
 				coupon.setImage(rs.getString("image"));
@@ -587,7 +585,7 @@ public class CouponsDBDAO implements CouponsDAO {
 		ArrayList<Coupon> coupons = new ArrayList<Coupon>();
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from coupons where id = (select coupon_id from customers_vs_coupons where customer_id = ?) and category_id = ?";
+			String sql = "select * from coupons where id in (select coupon_id from customers_vs_coupons where customer_id = ?) and category_id = ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, customerID);
 			pstmt.setInt(2, categoryID);
@@ -599,8 +597,8 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setCategory(Category.values()[rs.getInt("category_id")]);
 				coupon.setTitle(rs.getString("title"));
 				coupon.setDescription(rs.getString("description"));
-				coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
-				coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+				coupon.setStartDate(rs.getTimestamp("start_date"));
+				coupon.setEndDate(rs.getTimestamp("end_date"));
 				coupon.setAmount(rs.getInt("amount"));
 				coupon.setPrice(rs.getInt("price"));
 				coupon.setImage(rs.getString("image"));
@@ -629,7 +627,7 @@ public class CouponsDBDAO implements CouponsDAO {
 		ArrayList<Coupon> coupons = new ArrayList<Coupon>();
 		try {
 			con = connectionPool.getConnection();
-			String sql = "select * from coupons where id = (select coupon_id from customers_vs_coupons where customer_id = ?) and price <= ?";
+			String sql = "select * from coupons where id in (select coupon_id from customers_vs_coupons where customer_id = ?) and price <= ?";
 			PreparedStatement pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, customerID);
 			pstmt.setDouble(2, maxPrice);
@@ -641,8 +639,8 @@ public class CouponsDBDAO implements CouponsDAO {
 				coupon.setCategory(Category.values()[rs.getInt("category_id")]);
 				coupon.setTitle(rs.getString("title"));
 				coupon.setDescription(rs.getString("description"));
-				coupon.setStartDate(LocalDate.parse(rs.getString("start_date")));
-				coupon.setEndDate(LocalDate.parse(rs.getString("end_date")));
+				coupon.setStartDate(rs.getTimestamp("start_date"));
+				coupon.setEndDate(rs.getTimestamp("end_date"));
 				coupon.setAmount(rs.getInt("amount"));
 				coupon.setPrice(rs.getInt("price"));
 				coupon.setImage(rs.getString("image"));
