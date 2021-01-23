@@ -1,5 +1,7 @@
 package test;
 
+import java.util.Scanner;
+
 import main.core.cleanExpired.ExpiredCouponsClean;
 import main.core.exceptions.CouponSystemExceprion;
 import main.core.exceptions.LoginManagerException;
@@ -8,38 +10,60 @@ import main.core.loginManager.ClientType;
 import main.core.loginManager.LoginManager;
 import test.facade.AdminFacadeTest;
 import test.facade.CompanyFacadeTest;
-import test.facade.CustomerFacadeTest;
+import test.facade.FacadeTest;
 
 public class Test {
 	
-	public static void testAll() {
-
-		LoginManager login = LoginManager.getInstance();
+	private Scanner scan = new Scanner(System.in);
+	private LoginManager login = LoginManager.getInstance();
+	
+	public void testAll() {
+		boolean systemOn = true;
+		
 		ExpiredCouponsClean expiredCouponsCleaner = null;
 
-		
-		try {
+		try  {
 
 			expiredCouponsCleaner = new ExpiredCouponsClean();
-			System.out.println("___________________________________________________________________________________________________________________________________________________");
-			ClientFacade admin = login.login("admin@admin.com", "admin", ClientType.ADMINISTRATOR);
-			AdminFacadeTest adminTest = new AdminFacadeTest(admin);
-			adminTest.runTest();
-			System.out.println("___________________________________________________________________________________________________________________________________________________");
+			FacadeTest facadeTest = null;	
 
-			System.out.println("___________________________________________________________________________________________________________________________________________________");
-			ClientFacade company = login.login("aaa@aaa.com", "aaa", ClientType.COMPANY);
-			CompanyFacadeTest companyTest = new CompanyFacadeTest(company);
-			companyTest.runTest();
-			System.out.println("___________________________________________________________________________________________________________________________________________________");
+			while (systemOn) {
+				logInMenu();
+				String input = scan.nextLine();
+				
+				switch (input) {
+				
+				case "admin":
+				case "1":
+					facadeTest = new AdminFacadeTest(logIn(ClientType.ADMINISTRATOR));
+					break;
 
-			System.out.println("___________________________________________________________________________________________________________________________________________________");
-			ClientFacade customer = login.login("aaa@aaa.com", "aaa", ClientType.CUSTOMER);
-			CustomerFacadeTest customerTest = new CustomerFacadeTest(customer);
-			customerTest.runTest();
-			System.out.println("___________________________________________________________________________________________________________________________________________________");
-			
-			
+				case "company":
+				case "2":
+					facadeTest = new CompanyFacadeTest(logIn(ClientType.COMPANY));
+					break;
+
+				case "customer":
+				case "3":
+					facadeTest = new CompanyFacadeTest(logIn(ClientType.CUSTOMER));
+					break;
+
+				case "quit":
+				case "q":
+					systemOn = false;
+					break;
+
+				default:
+					System.out.println("Wrong value, please enter one of the choices above");
+					break;
+				}
+				
+				if (facadeTest != null)
+					facadeTest.runTest();
+			}
+			System.out.println(
+					"___________________________________________________________________________________________________________________________________________________");
+
 		} catch (LoginManagerException e) {
 			System.out.println(e.getMessage());
 		} catch (CouponSystemExceprion e) {
@@ -49,4 +73,29 @@ public class Test {
 			expiredCouponsCleaner.stop();
 		}
 	}
+
+	private void logInMenu() {
+		System.out.println("______________________ LogIn Test __________________________");
+		System.out.println(
+				"Admin ........................................................................................................................................................ 1 / admin");
+		System.out.println(
+				"Company client ..................................................................................................................................... 2 / company");
+		System.out.println(
+				"Customer client .................................................................................................................................... 3 / customer");
+		System.out.println(
+				"Quit ............................................................................................................................................................ q / quit");
+		System.out.print("Please choose your client type: ");
+	}
+	
+	private ClientFacade logIn(ClientType clientType) throws LoginManagerException {
+		
+		System.out.print("Email: ");
+		String email = scan.nextLine();
+		System.out.print("Password: ");
+		String password = scan.nextLine();
+		
+		return login.login(email, password, clientType);
+	}
+	
+
 }

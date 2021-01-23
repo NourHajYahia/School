@@ -14,7 +14,7 @@ import main.core.exceptions.FacadeException;
 import main.core.facade.ClientFacade;
 import main.core.facade.CustomerFacade;
 
-public class CustomerFacadeTest {
+public class CustomerFacadeTest extends FacadeTest {
 
 	private CustomerFacade facade;
 
@@ -52,6 +52,7 @@ public class CustomerFacadeTest {
 
 	}
 
+	@Override
 	public void runTest() {
 
 		Coupon coupon;

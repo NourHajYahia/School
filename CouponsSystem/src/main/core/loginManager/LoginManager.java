@@ -25,7 +25,6 @@ public class LoginManager {
 	public synchronized ClientFacade login(String email, String password, ClientType clientType) throws LoginManagerException {
 
 		ClientFacade client;
-
 		try {
 			switch (clientType) {
 			case ADMINISTRATOR:

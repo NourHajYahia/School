@@ -13,7 +13,7 @@ import main.core.exceptions.FacadeException;
 import main.core.facade.AdminFacade;
 import main.core.facade.ClientFacade;
 
-public class AdminFacadeTest {
+public class AdminFacadeTest extends FacadeTest {
 
 	private AdminFacade facade;
 
@@ -22,6 +22,7 @@ public class AdminFacadeTest {
 	}
 
 
+	@Override
 	public void runTest() {
 		Company company;
 		Customer customer;
@@ -29,12 +30,12 @@ public class AdminFacadeTest {
 		int companyID;
 		restoreCompaniesTableToDefault();
 		restoreCustomersTableToDefault();
+		
 		System.out.println();
 		System.out.println("__________________________________________ adminFacadeTest _______________________________________________");
 		System.out.println();
 
-		try {
-			facade = new AdminFacade();
+	
 			// viewing all companies within database companies table
 			System.out.println("________________________________________ getAllCompaniesTest _______________________________________________");
 			viewAllCompaniesTest();
@@ -212,10 +213,7 @@ public class AdminFacadeTest {
 			System.out.println();
 			// ------------------------------------------------------------------------------------------------------
 
-		} catch (FacadeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 
 	private void restoreCompaniesTableToDefault() {

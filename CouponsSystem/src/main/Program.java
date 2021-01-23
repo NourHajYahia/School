@@ -5,7 +5,8 @@ import test.Test;
 public class Program {
 
 	public static void main(String[] args) {
-		Test.testAll();
+		Test test = new Test();
+		test.testAll();
 
 	}
 

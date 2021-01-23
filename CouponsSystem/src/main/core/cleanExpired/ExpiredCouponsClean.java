@@ -22,7 +22,7 @@ public class ExpiredCouponsClean  {
 		try {
 			this.couponsDAO = new CouponsDBDAO();
 			timer = new Timer();
-			timer.scheduleAtFixedRate(new ExpiredCouponsTask(), 0, 50);
+			timer.scheduleAtFixedRate(new ExpiredCouponsTask(), 0, 1000*60);
 			System.out.println("Timer Start at: ");
 		} catch (DAOException e) {
 			throw new CouponSystemExceprion("System Error: initializing ExpiredCouponsTask failed", e);
