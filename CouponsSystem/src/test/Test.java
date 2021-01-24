@@ -1,13 +1,14 @@
 package test;
 
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
-import main.core.cleanExpired.ExpiredCouponsClean;
 import main.core.exceptions.CouponSystemExceprion;
 import main.core.exceptions.LoginManagerException;
 import main.core.facade.ClientFacade;
 import main.core.loginManager.ClientType;
 import main.core.loginManager.LoginManager;
+import main.threadJob.ExpiredCouponsClean;
 import test.facade.AdminFacadeTest;
 import test.facade.CompanyFacadeTest;
 import test.facade.CustomerFacadeTest;
@@ -24,7 +25,7 @@ public class Test {
 		ExpiredCouponsClean expiredCouponsCleaner = null;
 
 		try  {
-
+			System.out.println(LocalDateTime.now() );
 			expiredCouponsCleaner = new ExpiredCouponsClean();
 			FacadeTest facadeTest = null;	
 
