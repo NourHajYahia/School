@@ -10,6 +10,7 @@ import main.core.loginManager.ClientType;
 import main.core.loginManager.LoginManager;
 import test.facade.AdminFacadeTest;
 import test.facade.CompanyFacadeTest;
+import test.facade.CustomerFacadeTest;
 import test.facade.FacadeTest;
 
 public class Test {
@@ -45,7 +46,7 @@ public class Test {
 
 				case "customer":
 				case "3":
-					facadeTest = new CompanyFacadeTest(logIn(ClientType.CUSTOMER));
+					facadeTest = new CustomerFacadeTest(logIn(ClientType.CUSTOMER));
 					break;
 
 				case "quit":

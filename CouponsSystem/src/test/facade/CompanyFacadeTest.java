@@ -80,21 +80,21 @@ public class CompanyFacadeTest extends FacadeTest {
 		System.out.println("________________________________________ addCouponTest _______________________________________________");
 		System.out.println("\n1. adding first legit coupon:-");
 		
-		coupon = new Coupon(Category.ELECTRICITY, "aaa", "aaa aaa",new Date(), new GregorianCalendar(2022, 8, 24).getTime() , 5,
+		coupon = new Coupon(Category.ELECTRICITY, "aaa", "aaa aaa",new Date(System.currentTimeMillis()) , new Date(System.currentTimeMillis() + 1000*60) , 5,
 				100.0, "aaa");
 		addCouponTest(coupon);
 
 		System.out.println("\n2. adding second legit coupon:-");
-		coupon = new Coupon(Category.FOOD, "bbb", "bbb bbb", new Date(), new GregorianCalendar(2026, 10, 10).getTime(), 3, 200.0,
+		coupon = new Coupon(Category.FOOD, "bbb", "bbb bbb", new Date(System.currentTimeMillis()) , new Date(System.currentTimeMillis() + 1000*60*2), 3, 200.0,
 				"bbb");
 		addCouponTest(coupon);
 
 		System.out.println("\n3. adding third legit coupon:-");
-		coupon = new Coupon(Category.FOOD, "ccc", "ccc ccc", new Date(), new GregorianCalendar(2026, 10, 10).getTime(), 3, 50, "ccc");
+		coupon = new Coupon(Category.FOOD, "ccc", "ccc ccc", new Date(System.currentTimeMillis()) , new Date(System.currentTimeMillis() + 1000*60*60), 3, 50, "ccc");
 		addCouponTest(coupon);
 		
 		System.out.println("\n4. adding fourth legit coupon:-");
-		coupon = new Coupon(Category.VACATION, "ddd", "ddd ddd", new Date(), new GregorianCalendar(2023, 10, 10).getTime(), 0, 50, "ddd");
+		coupon = new Coupon(Category.VACATION, "ddd", "ddd ddd", new Date(System.currentTimeMillis()) , new Date(System.currentTimeMillis() + 1000*60*60*24), 0, 50, "ddd");
 		addCouponTest(coupon);
 
 		System.out.println("\n3. adding unlegit coupon with existed title in the same company:-");
@@ -113,17 +113,18 @@ public class CompanyFacadeTest extends FacadeTest {
 		// Testing updateCoupon for this company function requirements
 		System.out.println("________________________________________ updateCouponTest _______________________________________________");
 		System.out.println("\n1. updating coupon:-");
-		coupon = new Coupon(3, 0, Category.ELECTRICITY, "ccc1", "ccc ccc1",new Date(), new GregorianCalendar(2026, 10, 5).getTime(),
+		coupon = new Coupon(3, 0, Category.ELECTRICITY, "ccc1", "ccc ccc1", new Date(System.currentTimeMillis()) , new Date(System.currentTimeMillis() + 1000*60*60*24*2),
 				7, 150, "ccc1");
+		
 		updateCouponTest(coupon);
 
 		System.out.println("\n2. updating coupon with existed title:-");
-		coupon = new Coupon(3, 0, Category.ELECTRICITY, "bbb", "ccc ccc1", new Date(), new GregorianCalendar(2026, 10, 5).getTime(),
+		coupon = new Coupon(3, 0, Category.ELECTRICITY, "bbb", "ccc ccc1", new Date(System.currentTimeMillis()) , new Date(System.currentTimeMillis() + 1000*60*60*24*2),
 				7, 150, "ccc1");
 		updateCouponTest(coupon);
 
 		System.out.println("\n3. updating coupon with unexisted id:-");
-		coupon = new Coupon(5, 0, Category.ELECTRICITY, "ccc1", "ccc ccc1", new Date(), new GregorianCalendar(2026, 10, 5).getTime(),
+		coupon = new Coupon(5, 0, Category.ELECTRICITY, "ccc1", "ccc ccc1", new Date(System.currentTimeMillis()) , new Date(System.currentTimeMillis() + 1000*60*60*24*2),
 				7, 150, "ccc1");
 		updateCouponTest(coupon);
 		System.out.println();

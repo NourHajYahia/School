@@ -2,7 +2,6 @@ package main.core.cleanExpired;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,7 +22,7 @@ public class ExpiredCouponsClean  {
 			this.couponsDAO = new CouponsDBDAO();
 			timer = new Timer();
 			timer.scheduleAtFixedRate(new ExpiredCouponsTask(), 0, 1000*60);
-			System.out.println("Timer Start at: ");
+			System.out.println(">>>>>>>>>> Timer Started");
 		} catch (DAOException e) {
 			throw new CouponSystemExceprion("System Error: initializing ExpiredCouponsTask failed", e);
 		}
@@ -31,7 +30,7 @@ public class ExpiredCouponsClean  {
 	
 	public void stop() {
 		timer.cancel();
-		System.out.println("Timer Stoped");
+		System.out.println(">>>>>>>>>> Timer Stoped");
 	}
 	
 	private class ExpiredCouponsTask extends TimerTask{
@@ -41,14 +40,12 @@ public class ExpiredCouponsClean  {
 			try {
 				ArrayList<Coupon> coupons = couponsDAO.getAllExpiredCoupons();
 				if (!coupons.isEmpty()) {
-					System.err.println("deleted");
 					for (Coupon coupon : coupons) {
-						System.out.println("deleting expired: " + coupon);
+						System.out.println(">>>>>>>>>> deleted expired: " + coupon);
 						couponsDAO.deleteCouponPurchase(coupon.getId());
 						couponsDAO.deleteCoupon(coupon.getId());
 					}
 				}
-				System.err.println("run fineshed at: " + new Date());
 			} catch (DAOException e) {
 				System.out.println(e.getMessage());
 			}
