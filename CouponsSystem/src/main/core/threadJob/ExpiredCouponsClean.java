@@ -1,4 +1,4 @@
-package main.threadJob;
+package main.core.threadJob;
 
 
 import java.util.ArrayList;
@@ -30,6 +30,7 @@ public class ExpiredCouponsClean  {
 	
 	public void stop() {
 		timer.cancel();
+		timer.purge();
 		System.out.println(">>>>>>>>>> Timer Stoped");
 	}
 	

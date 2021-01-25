@@ -1,15 +1,10 @@
 package test.facade;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import main.core.beans.Category;
 import main.core.beans.Coupon;
 import main.core.beans.Customer;
-import main.core.db.ConnectionPool;
-import main.core.exceptions.ConnectionPoolException;
 import main.core.exceptions.FacadeException;
 import main.core.facade.ClientFacade;
 import main.core.facade.CustomerFacade;
@@ -22,41 +17,11 @@ public class CustomerFacadeTest extends FacadeTest {
 		this.facade = (CustomerFacade) facade;
 	}
 
-	private void restorecCustomersCouponsTableToDefault() {
-
-		Connection con = null;
-		ConnectionPool connectionPool = null;
-
-		try {
-			connectionPool = ConnectionPool.getInstance();
-			con = connectionPool.getConnection();
-
-			String sqlDelete = "delete from customers_vs_coupons";
-			Statement pstmt1 = con.createStatement();
-			pstmt1.executeUpdate(sqlDelete);
-
-			String sqlResetIncrement = "ALTER TABLE customers_vs_coupons AUTO_INCREMENT = 1";
-			Statement pstmt2 = con.createStatement();
-			pstmt2.executeUpdate(sqlResetIncrement);
-
-		} catch (ConnectionPoolException | SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				connectionPool.restoreConnections(con);
-			} catch (ConnectionPoolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-	}
 
 	@Override
 	public void runTest() {
 
 		Coupon coupon;
-		restorecCustomersCouponsTableToDefault();
 
 		System.out.println();
 		System.out.println("____________________________________________ customerFacadeTest _______________________________________________");

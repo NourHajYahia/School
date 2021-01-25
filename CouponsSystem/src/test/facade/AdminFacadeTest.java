@@ -1,14 +1,9 @@
 package test.facade;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import main.core.beans.Company;
 import main.core.beans.Customer;
-import main.core.db.ConnectionPool;
-import main.core.exceptions.ConnectionPoolException;
 import main.core.exceptions.FacadeException;
 import main.core.facade.AdminFacade;
 import main.core.facade.ClientFacade;
@@ -28,8 +23,7 @@ public class AdminFacadeTest extends FacadeTest {
 		Customer customer;
 		int customerID;
 		int companyID;
-		restoreCompaniesTableToDefault();
-		restoreCustomersTableToDefault();
+
 		
 		System.out.println();
 		System.out.println("__________________________________________ adminFacadeTest _______________________________________________");
@@ -216,53 +210,6 @@ public class AdminFacadeTest extends FacadeTest {
 		
 	}
 
-	private void restoreCompaniesTableToDefault() {
-		Connection con = null;
-		ConnectionPool connectionPool = null;
-		try {
-			connectionPool = ConnectionPool.getInstance();
-			con = connectionPool.getConnection();
-			String sqlDelete = "delete from companies";
-			Statement pstmt1 = con.createStatement();
-			pstmt1.executeUpdate(sqlDelete);
-
-			String sqlResetIncrement = "ALTER TABLE companies AUTO_INCREMENT = 1";
-			Statement pstmt2 = con.createStatement();
-			pstmt2.executeUpdate(sqlResetIncrement);
-		} catch (ConnectionPoolException | SQLException e) {
-			System.out.println(e.getMessage());
-		} finally {
-			try {
-				connectionPool.restoreConnections(con);
-			} catch (ConnectionPoolException e) {
-				System.out.println(e.getMessage());
-			}
-		}
-	}
-
-	private void restoreCustomersTableToDefault() {
-		Connection con = null;
-		ConnectionPool connectionPool = null;
-		try {
-			connectionPool = ConnectionPool.getInstance();
-			con = connectionPool.getConnection();
-			String sqlDelete = "delete from customers";
-			Statement pstmt1 = con.createStatement();
-			pstmt1.executeUpdate(sqlDelete);
-
-			String sqlResetIncrement = "ALTER TABLE customers AUTO_INCREMENT = 1";
-			Statement pstmt2 = con.createStatement();
-			pstmt2.executeUpdate(sqlResetIncrement);
-		} catch (ConnectionPoolException | SQLException e) {
-			System.out.println(e.getMessage());
-		} finally {
-			try {
-				connectionPool.restoreConnections(con);
-			} catch (ConnectionPoolException e) {
-				System.out.println(e.getMessage());
-			}
-		}
-	}
 
 	private void viewAllCompaniesTest() {
 		try {
