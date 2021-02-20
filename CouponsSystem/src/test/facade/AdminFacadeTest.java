@@ -329,5 +329,4 @@ public class AdminFacadeTest extends FacadeTest {
 			System.out.println(e.getMessage());
 		}
 	}
-
 }

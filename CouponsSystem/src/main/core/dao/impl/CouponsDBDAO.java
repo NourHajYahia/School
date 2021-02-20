@@ -656,5 +656,56 @@ public class CouponsDBDAO implements CouponsDAO {
 
 		return coupons;
 	}
+	
+	@Override
+	public void deleteCompanyCoupons(int companyID) throws DAOException {
 
+		Connection con = null;
+
+		try {
+			con = connectionPool.getConnection();
+			String sql = "delete from coupons where company_id = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, companyID);
+			pstmt.executeUpdate();
+		} catch (ConnectionPoolException | SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("DAO Error: deleting company coupons failed", e);
+		} finally {
+			try {
+				connectionPool.restoreConnections(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: deleting company coupons failed", e);
+			}
+		}
+
+	}
+	
+	@Override
+	public void deleteCustomerCoupons(int customerID) throws DAOException {
+
+		Connection con = null;
+
+		try {
+			con = connectionPool.getConnection();
+			String sql = "delete from customers_vs_coupons where CUSTOMER_ID = ?";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, customerID);
+			pstmt.executeUpdate();
+		} catch (ConnectionPoolException | SQLException e) {
+			e.printStackTrace();
+			throw new DAOException("DAO Error: deleting customer coupons failed", e);
+		} finally {
+			try {
+				connectionPool.restoreConnections(con);
+			} catch (ConnectionPoolException e) {
+				e.printStackTrace();
+				throw new DAOException("DAO Error: deleting company coupons failed", e);
+			}
+		}
+
+	}
+	
+	
 }

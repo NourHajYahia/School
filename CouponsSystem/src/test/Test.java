@@ -11,16 +11,17 @@ import main.core.loginManager.LoginManager;
 import main.core.threadJob.ExpiredCouponsClean;
 import test.createDB.InitializeDB;
 import test.facade.AdminFacadeTest;
+import test.facade.CompanyFacadeTest;
+import test.facade.CustomerFacadeTest;
 import test.facade.FacadeTest;
 
 public class Test {
 
 	private Scanner scan = new Scanner(System.in);
-	
 
 	public void testAll() {
 
- 		InitializeDB.start();
+		InitializeDB.start();
 		boolean systemOn = true;
 		ExpiredCouponsClean expiredCouponsCleaner = null;
 		try {
@@ -32,7 +33,7 @@ public class Test {
 
 				FacadeTest facadeTest = null;
 				ClientFacade clientFacade = null;
-				
+
 				switch (input) {
 				case "admin":
 				case "1":
@@ -46,7 +47,7 @@ public class Test {
 				case "2":
 					clientFacade = logIn(ClientType.COMPANY);
 					if (clientFacade != null) {
-						facadeTest = new AdminFacadeTest(clientFacade);
+						facadeTest = new CompanyFacadeTest(clientFacade);
 					}
 					break;
 
@@ -54,7 +55,7 @@ public class Test {
 				case "3":
 					clientFacade = logIn(ClientType.CUSTOMER);
 					if (clientFacade != null) {
-						facadeTest = new AdminFacadeTest(clientFacade);
+						facadeTest = new CustomerFacadeTest(clientFacade);
 					}
 					break;
 
@@ -76,9 +77,16 @@ public class Test {
 			}
 		} catch (CouponSystemExceprion e) {
 			System.out.println(e.getMessage());
-		}finally {
-			expiredCouponsCleaner.stop();
-			scan.close();
+			e.printStackTrace();
+		} finally {
+			try {
+				expiredCouponsCleaner.stop();
+				scan.close();
+				ConnectionPool.getInstance().closeAllConnections();
+			} catch (CouponSystemExceprion e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
+			}
 		}
 
 	}

@@ -15,7 +15,8 @@ public class ConnectionPool {
 	private String user = "root";
 	private String password = "n12345";
 	private static final int MAX = 5;
-	private Set<Connection> connections = new HashSet<Connection>();
+	private Set<Connection> connectionsOut = new HashSet<Connection>();
+	private Set<Connection> connectionsIn = new HashSet<Connection>();
 
 	private static ConnectionPool instance;
 
@@ -23,7 +24,7 @@ public class ConnectionPool {
 		for (int i = 0; i < MAX; i++) {
 			try {
 				Connection con = DriverManager.getConnection(url, user, password);
-				connections.add(con);
+				connectionsIn.add(con);
 			} catch (SQLException e) {
 				throw new ConnectionPoolException("Connection Error: failed to connect", e);
 			}
@@ -39,7 +40,7 @@ public class ConnectionPool {
 	}
 
 	public synchronized Connection getConnection() throws ConnectionPoolException {
-		while (connections.isEmpty()) {
+		while (connectionsIn.isEmpty()) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
@@ -47,19 +48,27 @@ public class ConnectionPool {
 			}
 		}
 
-		Iterator<Connection> it = connections.iterator();
+		Iterator<Connection> it = connectionsIn.iterator();
 		Connection connection = it.next();
+		connectionsOut.add(connection);
 		it.remove();
 		return connection;
 	}
 
 	public synchronized void restoreConnections(Connection connection) throws ConnectionPoolException {
-		connections.add(connection);
-		notify();
+		if (connection != null && connectionsOut.contains(connection)) {			
+			connectionsIn.add(connection);
+			connectionsOut.remove(connection);
+			notify();
+		}else {
+			throw new ConnectionPoolException("Connection Error: connection to restore does not fitt the connection pool set");
+		}
 	}
+	
+	
 
 	public synchronized void closeAllConnections() throws ConnectionPoolException {
-		while (connections.size() != MAX) {
+		while (connectionsIn.size() != MAX) {
 			try {
 				System.out.println("connection pool is waiting for returns");
 				wait();
@@ -69,7 +78,7 @@ public class ConnectionPool {
 		}
 
 		try {
-			Iterator<Connection> it = connections.iterator();
+			Iterator<Connection> it = connectionsIn.iterator();
 			while (it.hasNext()) {
 				Connection connection = it.next();
 				connection.close();

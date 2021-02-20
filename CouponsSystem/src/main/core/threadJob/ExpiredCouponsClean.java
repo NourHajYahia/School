@@ -13,6 +13,10 @@ import main.core.exceptions.DAOException;
 
 public class ExpiredCouponsClean  {
 
+	public Timer getTimer() {
+		return timer;
+	}
+
 	private Timer timer;
 	private CouponsDAO couponsDAO;
 
