@@ -1,5 +1,6 @@
 package app.core.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -22,14 +23,13 @@ public class Customer {
 	private String email;
 	private String password;
 	@ManyToMany(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-	@JoinTable(name = "coupon_customer", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "coupon_id"))
+	@JoinTable(name = "coupon_vs_customer", joinColumns = @JoinColumn(name = "customer_id"), inverseJoinColumns = @JoinColumn(name = "coupon_id"))
 	private List<Coupon> coupons;
 
 	public Customer() {
 	}
 
-	public Customer(Integer id, String firstName, String lastName, String email, String password) {
-		this.id = id;
+	public Customer(String firstName, String lastName, String email, String password) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
@@ -83,11 +83,27 @@ public class Customer {
 	public void setCoupons(List<Coupon> coupons) {
 		this.coupons = coupons;
 	}
+	
+	public void addCoupon(Coupon coupon) {
+		if (this.coupons == null)
+			this.coupons = new ArrayList<Coupon>();
+		coupon.addCustomer(this);
+		this.coupons.add(coupon);
+	}
 
 	@Override
 	public String toString() {
 		return "Customer [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
 				+ ", password=" + password + "]";
+	}
+
+	public Customer(Integer id, String firstName, String lastName, String email, String password) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
+		this.password = password;
 	}
 
 }

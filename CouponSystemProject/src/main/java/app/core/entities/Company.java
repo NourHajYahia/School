@@ -31,6 +31,8 @@ public class Company {
 		this.email = email;
 		this.password = password;
 	}
+	
+	
 
 	public Integer getId() {
 		return id;
@@ -82,6 +84,14 @@ public class Company {
 	@Override
 	public String toString() {
 		return "Company [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + "]";
+	}
+
+	public Company(Integer id, String name, String email, String password) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.password = password;
 	}
 
 }
